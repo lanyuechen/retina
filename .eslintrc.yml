@@ -1,0 +1,10 @@
+extends: 
+  - eslint-config-umi
+globals:
+  PUBLIC_PATH: readonly
+  io: true
+# rules:
+#   no-console: 1
+#   no-unused-vars: 1
+#   react/display-name: 0
+#   react/prop-types: 0

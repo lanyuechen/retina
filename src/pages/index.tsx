@@ -1,18 +1,32 @@
-import React from 'react';
-import styles from './index.css';
+import React, { useEffect, useRef, useState } from 'react';
 
-export default function() {
+import Video from '@/components/Video';
+
+import Peer from '@/webrtc/Peer';
+import Room from '@/webrtc/Room';
+
+export default () => {
+  const ref = useRef<HTMLVideoElement>(null);
+  const [peers, setPeers] = useState<Peer[]>([]);
+
+  const handlePeerChange = (pcs: Peer[]) => {
+    setPeers(pcs);
+  }
+
+  useEffect(() => {
+    new Room({
+      roomId: 'foo',
+      localVideo: ref.current,
+      onPeerChange: handlePeerChange,
+    });
+  }, []);
+
   return (
-    <div className={styles.normal}>
-      <div className={styles.welcome} />
-      <ul className={styles.list}>
-        <li>To get started, edit <code>src/pages/index.js</code> and save to reload.</li>
-        <li>
-          <a href="https://umijs.org/guide/getting-started.html">
-            Getting Started
-          </a>
-        </li>
-      </ul>
+    <div>
+      <video ref={ref} autoPlay playsInline />
+      {peers.map(d => (
+        <Video key={d.id} src={d.remoteStream} />
+      ))}
     </div>
   );
 }

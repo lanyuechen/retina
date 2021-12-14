@@ -11,6 +11,7 @@
     "strict": true,
     "paths": {
       "@/*": ["src/*"],
+      "@@/*": ["src/.umi/*"],
       "@tmp/*": ["src/pages/.umi/*"]
     },
     "allowSyntheticDefaultImports": true
