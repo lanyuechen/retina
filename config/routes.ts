@@ -4,9 +4,10 @@
 export default [
   {
     path: '/',
-    component: '../layouts/index',
+    component: '@/layouts/index',
     routes: [
-      { path: '/', component: '../pages/index' }
+      { path: '/', component: '@/pages/index' },
+      { path: '/room/:id', component: '@/pages/Room'},
     ]
   }
 ]
