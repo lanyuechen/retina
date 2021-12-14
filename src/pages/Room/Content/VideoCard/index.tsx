@@ -3,8 +3,8 @@ import { Avatar, Tag } from 'antd';
 import AspectCard from '@/components/AspectCard';
 import { AudioIcon } from '@/components/ToggleIcon';
 import Video from '@/components/Video';
+import Tool from '@/components/Tool';
 
-import Tool from '@/pages/Room/Tool';
 import style from './style.less';
 
 interface PropType {

@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { Button, Dropdown, Tooltip } from 'antd';
 import { MoreOutlined } from '@ant-design/icons';
 import { AudioIcon } from '@/components/ToggleIcon';
@@ -11,7 +11,6 @@ interface PropType {
 }
 
 export default (props: PropType) => {
-  const service = {};
   const { peer, className } = props;
 
   return (

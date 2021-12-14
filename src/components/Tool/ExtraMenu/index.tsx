@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { Menu, message } from 'antd';
 import {
   UserOutlined,
@@ -16,23 +16,23 @@ export default (props: PropType) => {
   const { peerId, local, pinned, video } = participant;
 
   const toggleVideo = () => {
-    if (local) {
-      if (video) {
-        service.stopLocalPreview();
-      } else {
-        service.startLocalPreview();
-      }
-    } else {
-      if (video) {
-        service.stopRemoteView(peerId);
-      } else {
-        message.info('已向该用户发送请求！');
-      }
-    }
+    // if (local) {
+    //   if (video) {
+    //     service.stopLocalPreview();
+    //   } else {
+    //     service.startLocalPreview();
+    //   }
+    // } else {
+    //   if (video) {
+    //     service.stopRemoteView(peerId);
+    //   } else {
+    //     message.info('已向该用户发送请求！');
+    //   }
+    // }
   }
 
   const togglePin = () => {
-    service.pin(peerId, !pinned);
+    // service.pin(peerId, !pinned);
   }
 
   return (
