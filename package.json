@@ -11,12 +11,14 @@
     "@ant-design/icons": "^4.7.0",
     "antd": "^4.17.3",
     "react": "^16.8.6",
+    "react-copy-to-clipboard": "^5.0.4",
     "react-dom": "^16.8.6",
     "socket.io-client": "^4.4.0"
   },
   "devDependencies": {
     "@types/jest": "^23.3.12",
     "@types/react": "^16.7.18",
+    "@types/react-copy-to-clipboard": "^5.0.2",
     "@types/react-dom": "^16.0.11",
     "@types/react-test-renderer": "^16.0.3",
     "@umijs/preset-react": "^1.8.30",

@@ -1,0 +1,49 @@
+.room {
+  height: 100vh;
+  .left {
+    height: 100vh;
+    width: 100vw;
+    padding-right: 320px;
+    flex: auto;
+    display: flex;
+    flex-direction: column;
+    background: rgb(245, 246, 247);
+    .header {
+      height: 32px;
+    }
+    .content {
+      flex: auto;
+      padding: 8px;
+      position: relative;
+    }
+    .footer {
+      height: 50px;
+      background: #fff;
+      box-shadow: 0 -1px 5px rgba(0, 0, 0, 0.01);
+    }
+  }
+}
+.drawer {
+  [class~=ant-drawer-content-wrapper] {
+    box-shadow: -1px 0 5px rgba(0, 0, 0, 0.01)!important;
+  }
+  [class~=ant-drawer-body] {
+    padding: 0;
+  }
+  [class~=ant-drawer-close] {
+    padding: 10px;
+    font-size: 12px;
+  }
+}
+
+@media screen and (max-width: 960px) {
+  .container .left {
+    padding-right: 0!important;
+  }
+}
+
+@media screen and (max-width: 640px) {
+  .container .left {
+    padding-right: 0!important;
+  }
+}

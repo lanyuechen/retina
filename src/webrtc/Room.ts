@@ -15,33 +15,26 @@ export default class Room {
   peers: Peer[];
   me: any;
   localStream: MediaStream | undefined;
-  localVideo: HTMLVideoElement;
   socket: Socket | undefined;
   onPeerChange: (peers: Peer[]) => void;
 
-  constructor({ roomId, localVideo, onPeerChange }: any) {
+  constructor({ roomId, onPeerChange }: any) {
     this.roomId = roomId;
 
     this.peers = [];
     this.me = null;
-    this.localVideo = localVideo;
     this.onPeerChange = onPeerChange;
-
-    this.join();
   }
 
-  async join() {
+  async join(peerInfo: any) {
     // 连接socket
     this.connect();
 
     const mediaStream = await navigator.mediaDevices.getUserMedia(mediaStreamConstraints);
     this.localStream = mediaStream;
-    this.localVideo.srcObject = mediaStream;
 
     // 加入房间
-    this.socket?.emit('joinRoom', this.roomId, {
-      nickname: Math.random() + '',  // 昵称
-    });
+    this.socket?.emit('joinRoom', this.roomId, peerInfo);
   }
 
   connect() {

@@ -1,0 +1,64 @@
+.chat {
+  position: fixed;
+  z-index: 1000;
+  left: 10px;
+  bottom: 70px;
+  .message {
+    position: absolute;
+    bottom: 40px;
+    padding: 0;
+    li {
+      position: relative;
+      display: block;
+      height: 28px;
+      border-radius: 14px;
+      background: rgba(0, 0, 0, 0.4);
+      color: #fff;
+      margin-bottom: 8px;
+      padding: 0 14px 0 28px;
+      font-size: 12px;
+      line-height: 28px;
+      width: fit-content;
+      [class~=ant-avatar] {
+        position: absolute;
+        left: 4px;
+        top: 4px;
+        background-color: #1890ff;
+      }
+    }
+  }
+  .input {
+    .prefix, .suffix {
+      color: rgb(221, 221, 221);
+      position: absolute;
+      top: 9px;
+      cursor: pointer;
+    }
+    .prefix {
+      left: 10px;
+      border-right: 1px solid rgba(221, 221, 221, 0.5);
+      padding-right: 5px;
+    }
+    .suffix {
+      right: 10px;
+    }
+    input {
+      width: 200px;
+      height: 40px;
+      border-radius: 20px;
+      transition: width .3s;
+      outline: none!important;
+      text-indent: 36px;
+      border: none;
+      background: rgba(0, 0, 0, 0.5);
+      color: rgb(221, 221, 221);
+      &:hover {
+        background: rgba(0, 0, 0, 0.6);
+      }
+      &:focus {
+        width: 300px;
+      }
+    }
+  }
+  
+}
