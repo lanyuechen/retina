@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { PlusSquareOutlined } from '@ant-design/icons';
-import Icon from '@/component/Icon';
+import Icon from '@/components/Icon';
 import ModalNew from './ModalNew';
 import ModalJoin from './ModalJoin';
-import style from './style.module.scss';
+
+import style from './style.less';
 
 const BoxBtn = (props: any) => {
   const { children, icon, ...others } = props;
