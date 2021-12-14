@@ -1,0 +1,19 @@
+.navbar {
+  position: relative;
+  height: 120px;
+  .prev, .next {
+    position: absolute;
+    top: 45px;
+    color: #aaa;
+  }
+  .prev {
+    left: 16px;
+  }
+  .next {
+    right: 16px;
+  }
+}
+.main {
+  margin-top: 16px;
+  height: calc(100vh - 234px);
+}

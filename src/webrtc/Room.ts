@@ -1,24 +1,31 @@
-import { trace } from "./utils/log.js";
-import Peer from './Peer.js';
+import { trace } from "./utils/log";
+import io, { Socket } from 'socket.io-client';
+import Peer from './Peer';
 
-function getPcId(id1, id2) {
+function getPcId(id1: string, id2: string) {
   return [id1, id2].sort().join('-');
 }
 
+const mediaStreamConstraints = {
+  video: true,
+};
+
 export default class Room {
-  constructor({ roomId, localVideo, onPeerChange }) {
+  roomId: string;
+  peers: Peer[];
+  me: any;
+  localStream: MediaStream | undefined;
+  localVideo: HTMLVideoElement;
+  socket: Socket | undefined;
+  onPeerChange: (peers: Peer[]) => void;
+
+  constructor({ roomId, localVideo, onPeerChange }: any) {
     this.roomId = roomId;
-    this.pc = null;
 
     this.peers = [];
     this.me = null;
-    this.onPeerChange = onPeerChange;
-
-    this.mediaStreamConstraints = {
-      video: true,
-    };
-
     this.localVideo = localVideo;
+    this.onPeerChange = onPeerChange;
 
     this.join();
   }
@@ -27,18 +34,18 @@ export default class Room {
     // 连接socket
     this.connect();
 
-    const mediaStream = await navigator.mediaDevices.getUserMedia(this.mediaStreamConstraints);
+    const mediaStream = await navigator.mediaDevices.getUserMedia(mediaStreamConstraints);
     this.localStream = mediaStream;
-    // this.localVideo.srcObject = mediaStream;
+    this.localVideo.srcObject = mediaStream;
 
     // 加入房间
-    this.socket.emit('joinRoom', this.roomId, {
+    this.socket?.emit('joinRoom', this.roomId, {
       nickname: Math.random() + '',  // 昵称
     });
   }
 
   connect() {
-    this.socket = io.connect();
+    this.socket = io();
 
     this.socket.on('joined-room', this.handleJoinedRoom.bind(this));
     this.socket.on('peer-join-room', this.handlePeerJoinRoom.bind(this));
@@ -46,20 +53,7 @@ export default class Room {
     this.socket.on('message', this.handleMessage.bind(this));
   }
 
-  initAction() {
-    this.startButton = document.querySelector('#startButton');
-    this.hangupButton = document.querySelector('#hangupButton');
-
-    this.startButton.addEventListener('click', () => {
-      this.join();
-    });
-
-    this.hangupButton.addEventListener('click', () => {
-      this.hangup();
-    });
-  }
-
-  async handleJoinedRoom({ peer, peers, roomId }) {
+  async handleJoinedRoom({ peer, peers, roomId }: {peer: any; peers: any[]; roomId: string}) {
     trace(`${peer.nickname}（本人）加入房间“${roomId}”`);
 
     this.me = peer;
@@ -76,7 +70,7 @@ export default class Room {
     this.onPeerChange(this.peers);
   }
 
-  handlePeerJoinRoom({ peer, roomId }) {
+  handlePeerJoinRoom({ peer, roomId }: {peer: any; roomId: string}) {
     trace(`${peer.nickname} 加入房间“${roomId}”`);
     peer = new Peer({
       room: this,
@@ -93,14 +87,14 @@ export default class Room {
     this.onPeerChange(this.peers);
   }
 
-  handlePeerLeaveRoom(clientId) {
+  handlePeerLeaveRoom(clientId: string) {
     const peer = this.peers.find(d => d.peerInfo.clientId === clientId);
-    peer.destroy();
+    peer?.destroy();
     this.peers = this.peers.filter(d => d.peerInfo.clientId !== clientId);
     this.onPeerChange(this.peers);
   }
 
-  async handleMessage(message) {
+  async handleMessage(message: any) {
     const pc = this.peers.find(d => d.id === message.id);
     if (!pc) {  // todo 目前消息为广播模式，需要过滤
       return;
@@ -119,24 +113,22 @@ export default class Room {
     }
   }
 
-  sendMessage(message) {
-    this.socket.emit('message', message);
+  sendMessage(message: any) {
+    this.socket?.emit('message', message);
   }
 
   handleRemoteHangup() {
-    console.log('Session terminated.');
     this.stop();
   }
 
   hangup() {
     trace('挂断');
-    this.socket.disconnect('xxx');
+    this.socket?.disconnect();
     this.stop();
     this.sendMessage('bye');
   }
 
   stop() {
-    this.pc.destroy();
-    this.pc = null;
+
   }
 }

@@ -7,7 +7,6 @@ extends:
   - plugin:react/recommended
 globals:
   PUBLIC_PATH: readonly
-  io: true
 parser: babel-eslint
 parserOptions:
   ecmaFeatures:

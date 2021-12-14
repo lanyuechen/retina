@@ -1,0 +1,14 @@
+.container {
+  position: relative;
+  top: 4px;
+  .left {
+    float: left;
+  }
+  .middle {
+    overflow: hidden;
+    text-align: center;
+  }
+  .right {
+    float: right;
+  }
+}

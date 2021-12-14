@@ -1,15 +1,21 @@
-import { trace } from "./utils/log.js";
+import Room from './Room';
+import { trace } from './utils/log';
 
 export default class Peer {
-  constructor({ room, localStream, peerInfo, onChange }) {
+  id: string;
+  peerInfo: any;
+  room: Room;
+  peerConnection: RTCPeerConnection;
+  onChange: () => void;
+  remoteStream: MediaStream | undefined;
+
+  constructor({ room, localStream, peerInfo, onChange }: any) {
     this.id = peerInfo.peerId;
     this.peerInfo = peerInfo;
     this.room = room;
-    this.peerConnection = null;
-    this.remoteVideo = null;
     this.onChange = onChange;
 
-    const servers = null;
+    const servers = undefined;
 
     // Create peer connections and add behavior.
     this.peerConnection = new RTCPeerConnection(servers);
@@ -20,19 +26,10 @@ export default class Peer {
     for (let track of localStream.getTracks()) {
       this.peerConnection.addTrack(track, localStream);
     }
-
-    this.initRemoteVideo();
-  }
-
-  initRemoteVideo() {
-    this.remoteVideo = document.createElement('video');
-    this.remoteVideo.id =`${this.id}`;
-    this.remoteVideo.setAttribute('autoplay', true);
-    this.remoteVideo.setAttribute('playsinline', true);
   }
 
   // Connects with new peer candidate.
-  handleIceCandidate(event) {
+  handleIceCandidate(event: RTCPeerConnectionIceEvent) {
     if (event.candidate) {
       this.room.sendMessage({
         type: 'candidate',
@@ -47,29 +44,30 @@ export default class Peer {
   }
 
   // Logs changes to the connection state.
-  handleConnectionChange(event) {
+  handleConnectionChange(event: any) {
     const peerConnection = event.target;
     trace(`ICE state: ${peerConnection.iceConnectionState}.`);
   }
 
-  handleRemoteTrack(event) {
+  handleRemoteTrack(event: RTCTrackEvent) {
     if (event.streams && event.streams[0]) {
-      this.remoteVideo.srcObject = event.streams[0];
       this.remoteStream = event.streams[0];
     } else {
-      this.remoteVideo.srcObject = new MediaStream(event.track);
-      this.remoteStream = new MediaStream(event.track);
+      if (!this.remoteStream) {
+        this.remoteStream = new MediaStream();
+      }
+      this.remoteStream.addTrack(event.track);
     }
     this.onChange();
   }
 
-  addIceCandidate(candidate) {
+  addIceCandidate(candidate: RTCIceCandidate) {
     this.peerConnection.addIceCandidate(candidate);
   }
 
   async createOffer() {
     trace('发送offser');
-    const description = await this.peerConnection.createOffer(this.offerOptions);
+    const description = await this.peerConnection.createOffer();
     this.peerConnection.setLocalDescription(description);
     this.room.sendMessage({
       type: description.type,
@@ -89,13 +87,12 @@ export default class Peer {
     });
   }
 
-  setRemoteDescription(description) {
+  setRemoteDescription(description: RTCSessionDescription) {
     trace('setRemoteDescription', description);
     this.peerConnection.setRemoteDescription(description);
   }
 
   destroy() {
     this.peerConnection.close();
-    this.peerConnection = null;
   }
 }

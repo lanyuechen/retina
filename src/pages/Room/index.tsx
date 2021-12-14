@@ -17,7 +17,7 @@ export default (props: any) => {
 
   useEffect(() => {
     new Room({
-      roomId: 'foo',
+      roomId: id,
       localVideo: ref.current,
       onPeerChange: handlePeerChange,
     });

@@ -1,0 +1,27 @@
+.pagination {
+  position: relative;
+  .prev, .next {
+    position: absolute;
+    top: 50%;
+    color: #aaa;
+  }
+  .prev {
+    left: 16px;
+  }
+  .next {
+    right: 16px;
+  }
+}
+
+.container {
+  display: flex!important;
+  height: calc(100vh - 98px);
+  align-items: center;
+  justify-content: center;
+  & > div {
+    width: 100%;
+  }
+  [class~=ant-col] {
+    margin-bottom: 8px;
+  }
+}

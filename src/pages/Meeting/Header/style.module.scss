@@ -1,0 +1,92 @@
+.container {
+  padding: 5px 16px;
+}
+
+.menu {
+  position: relative;
+  list-style: none;
+  margin: 0;
+  padding: 4px 0;
+  text-align: left;
+  background-color: #fff;
+  background-clip: padding-box;
+  border-radius: 2px;
+  outline: none;
+  box-shadow: 0 3px 6px -4px rgba(0, 0, 0, 0.12), 0 6px 16px 0 rgba(0, 0, 0, 0.08), 0 9px 28px 8px rgba(0, 0, 0, 0.05);
+  li {
+    display: inline-block;
+    margin: 8px;
+    text-align: center;
+    cursor: pointer;
+    .icon {
+      width: 150px;
+      height: 100px;
+      background: #aaa;
+      border: 2px solid transparent;
+      border-radius: 4px;
+      transition: border-color .4s;
+      &[data-type=gallery] {
+        background: url(./img/gallery.png) 0 0 no-repeat;
+        background-size: 146px 96px;
+        &:hover {
+          background-position: 0 1px;
+          background-image: url(./img/gallery-active.png);
+        }
+      }
+      &[data-type=thumbnail] {
+        background: url(./img/thumbnail.png) 0 0 no-repeat;
+        background-size: 146px 96px;
+        &:hover {
+          background-position: 0 1px;
+          background-image: url(./img/thumbnail-active.png);
+        }
+      }
+      &[data-type=speaker] {
+        background: url(./img/speaker.png) 0 0 no-repeat;
+        background-size: 146px 96px;
+        &:hover {
+          background-image: url(./img/speaker-active.png);
+        }
+      }
+    }
+    &.active .icon {
+      border-color: #1890ff;
+    }
+  }
+}
+
+.menu.info {
+  padding: 16px;
+  width: 320px;
+  ul {
+    padding-left: 0;
+    li {
+      margin: 0 0 10px 0;
+      font-size: 12px;
+      label {
+        width: 64px;
+        float: left;
+        text-align: left;
+        color: #999;
+      }
+      span {
+        display: block;
+        overflow: hidden;
+        text-align: left;
+      }
+    }
+  }
+}
+
+.dropdown {
+  cursor: pointer;
+  padding: 2px 5px;
+  border-radius: 4px;
+  &:hover {
+    background: rgb(212, 212, 212);
+  }
+}
+
+.layoutDropdown {
+  float: right;
+}
