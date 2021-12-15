@@ -14,11 +14,11 @@ export default class Room {
   onChange: any;
   mediaStreamConstraints: any;
 
-  constructor({ roomId, onChange }: RoomInitParams) {
+  constructor({ roomId, constraints, onChange }: RoomInitParams) {
     this.roomId = roomId;
     this.peers = [];
     this.me = null;
-    this.mediaStreamConstraints = {
+    this.mediaStreamConstraints = constraints || {
       video: true,
     };
     this.onChange = onChange;
