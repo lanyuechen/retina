@@ -1,6 +1,7 @@
 import React from 'react';
 import { List, Avatar } from 'antd';
-import { AudioIcon, VideoIcon } from '@/components/ToggleIcon';
+import Icon from '@/components/Icon';
+import { AudioOutlined, AudioMutedOutlined } from '@ant-design/icons';
 import Tool from '@/components/Tool';
 import style from './style.less';
 
@@ -12,10 +13,10 @@ export default (props: {peer: any}) => {
       className={style.peer}
       actions={[
         <span key="1">
-          <AudioIcon active={peer.audio} />
+          {peer.audio ? <AudioOutlined /> : <AudioMutedOutlined className="color-danger" />}
         </span>, 
         <span key="2">
-          <VideoIcon active={peer.video} />
+          {peer.video ? <Icon type="icon-camera" /> : <Icon type="icon-camera-disabled" className="color-danger" />}
         </span>
       ]}
     >

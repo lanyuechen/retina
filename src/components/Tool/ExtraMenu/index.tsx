@@ -3,8 +3,9 @@ import { Menu, message } from 'antd';
 import {
   UserOutlined,
   UserDeleteOutlined,
+  PushpinOutlined,
 } from '@ant-design/icons';
-import { VideoIcon, PinIcon } from '@/components/ToggleIcon';
+import Icon from '@/components/Icon';
 
 interface PropType {
   participant: any;
@@ -37,10 +38,10 @@ export default (props: PropType) => {
 
   return (
     <Menu {...others}>
-      <Menu.Item icon={<VideoIcon active={!video} />} onClick={toggleVideo}>
+      <Menu.Item icon={!video ? <Icon type="icon-camera" /> : <Icon type="icon-camera-disabled" className="color-danger" />} onClick={toggleVideo}>
         {video ? '关闭视频' : '开启视频'}
       </Menu.Item>
-      <Menu.Item icon={<PinIcon active={true} />} onClick={togglePin}>
+      <Menu.Item icon={!pinned ? <PushpinOutlined /> : <PushpinOutlined />} onClick={togglePin}>
         {pinned ? '取消固定' : '固定视频'}
       </Menu.Item>
       {!local && (

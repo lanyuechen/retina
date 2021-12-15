@@ -4,7 +4,7 @@ import { UpOutlined } from '@ant-design/icons';
 import style from './style.less';
 
 export default (props: any) => {
-  const { icon, dropdown, children, onClick, style: containerStyle } = props;
+  const { icon, dropdown, children, onClick, badge, style: containerStyle } = props;
   
   return (
     <span className={style.container} onClick={onClick} style={containerStyle}>
@@ -14,6 +14,11 @@ export default (props: any) => {
         </div>
         <div className={style.name}>
           {children}
+          {badge !== undefined && (
+            <small className={style.badge}>
+              {badge}
+            </small>
+          )}
         </div>
       </div>
       {dropdown && (

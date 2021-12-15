@@ -1,5 +1,6 @@
-import React, { useContext, useEffect } from 'react';
-import VideoCard from '../VideoCard';
+import React from 'react';
+import VideoCard from '@/components/VideoCard';
+
 import style from './style.less';
 
 export default (props: any) => {

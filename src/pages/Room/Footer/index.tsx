@@ -1,23 +1,23 @@
-import React, { useContext } from 'react';
-import { useHistory } from "react-router-dom";
+import React from 'react';
 import { Menu, Dropdown, Modal } from 'antd';
 import {
-  ControlOutlined,
   UserAddOutlined,
   MoreOutlined,
   PhoneOutlined,
+  AudioOutlined, AudioMutedOutlined,
 } from '@ant-design/icons';
 import Icon from '@/components/Icon';
-import { AudioIcon, VideoIcon } from '@/components/ToggleIcon';
 import Btn from './Btn';
 import style from './style.less';
 
 interface PropType {
-  showParticipants: () => void;
+  peers: any[];
+  onAction: (key: string) => void;
 }
 
 export default (props: PropType) => {
-  const { showParticipants } = props;
+  const { peers, onAction } = props;
+  const me = peers[0];
 
   const menu = (
     <Menu>
@@ -46,16 +46,16 @@ export default (props: PropType) => {
   }
 
   return (
-    <div className={style.container}>
+    <div className={style.footer}>
       <Btn
-        icon={<AudioIcon active={true} />}
+        icon={me.audio ? <AudioOutlined /> : <AudioMutedOutlined className="color-danger" />}
         // onClick={me.audio ? service.stopLocalAudio : service.startLocalAudio}
         dropdown={menu}
       >
         麦克风
       </Btn>
       <Btn
-        icon={<VideoIcon active={true} />}
+        icon={me.video ? <Icon type="icon-camera" /> : <Icon type="icon-camera-disabled" className="color-danger" />}
         // onClick={me.video ? service.stopLocalPreview : service.startLocalPreview}
         dropdown={menu}
       >
@@ -63,19 +63,10 @@ export default (props: PropType) => {
       </Btn>
       <Btn
         icon={<UserAddOutlined />}
-        onClick={showParticipants}
+        onClick={() => onAction('show-peers')}
+        badge={peers.length}
       >
         参会人
-        <small
-          style={{
-            position: 'absolute', 
-            top: -24, 
-            right: 0,
-            fontWeight: 'bold'
-          }}
-        >
-          {10}
-        </small>
       </Btn>
       <Btn 
         icon={<Icon type="icon-share-screen" style={{color: 'rgb(52, 199, 58)'}} />}

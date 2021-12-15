@@ -1,36 +1,34 @@
-import { trace } from "./utils/log";
 import io, { Socket } from 'socket.io-client';
 import Peer from './Peer';
+import { trace } from "./utils/log";
+import { getPcId } from './utils/utils';
 
-function getPcId(id1: string, id2: string) {
-  return [id1, id2].sort().join('-');
-}
-
-const mediaStreamConstraints = {
-  video: true,
-};
+import type { RoomInitParams, PeerBasicInfo, PeerInfo, Message } from './typings';
 
 export default class Room {
   roomId: string;
   peers: Peer[];
-  me: any;
+  me: PeerInfo | null;
   localStream: MediaStream | undefined;
   socket: Socket | undefined;
-  onPeerChange: (peers: Peer[]) => void;
+  onChange: any;
+  mediaStreamConstraints: any;
 
-  constructor({ roomId, onPeerChange }: any) {
+  constructor({ roomId, onChange }: RoomInitParams) {
     this.roomId = roomId;
-
     this.peers = [];
     this.me = null;
-    this.onPeerChange = onPeerChange;
+    this.mediaStreamConstraints = {
+      video: true,
+    };
+    this.onChange = onChange;
   }
 
-  async join(peerInfo: any) {
+  async join(peerInfo: PeerBasicInfo) {
     // 连接socket
     this.connect();
 
-    const mediaStream = await navigator.mediaDevices.getUserMedia(mediaStreamConstraints);
+    const mediaStream = await navigator.mediaDevices.getUserMedia(this.mediaStreamConstraints);
     this.localStream = mediaStream;
 
     // 加入房间
@@ -53,42 +51,42 @@ export default class Room {
 
     this.peers = peers.map(d => new Peer({
       room: this,
-      localStream: this.localStream,
+      localStream: this.localStream!,
       peerInfo: {
         ...d,
-        peerId: getPcId(d.clientId, peer.clientId),
+        id: getPcId(d.clientId, peer.clientId),
       },
-      onChange: () => this.onPeerChange([...this.peers]),
+      onChange: () => this.onChange([...this.peers]),
     }));
-    this.onPeerChange(this.peers);
+    this.onChange(this.peers);
   }
 
-  handlePeerJoinRoom({ peer, roomId }: {peer: any; roomId: string}) {
+  handlePeerJoinRoom({ peer, roomId }: {peer: PeerInfo; roomId: string}) {
     trace(`${peer.nickname} 加入房间“${roomId}”`);
-    peer = new Peer({
+    const newPeer = new Peer({
       room: this,
-      localStream: this.localStream,
+      localStream: this.localStream!,
       peerInfo: {
         ...peer,
-        peerId: getPcId(this.me.clientId, peer.clientId),
+        id: getPcId(this.me!.clientId, peer.clientId),
       },
-      onChange: () => this.onPeerChange([...this.peers]),
+      onChange: () => this.onChange([...this.peers]),
     });
-    peer.createOffer();
+    newPeer.createOffer();
 
-    this.peers = [...this.peers, peer];
-    this.onPeerChange(this.peers);
+    this.peers = [...this.peers, newPeer];
+    this.onChange(this.peers);
   }
 
   handlePeerLeaveRoom(clientId: string) {
     const peer = this.peers.find(d => d.peerInfo.clientId === clientId);
     peer?.destroy();
     this.peers = this.peers.filter(d => d.peerInfo.clientId !== clientId);
-    this.onPeerChange(this.peers);
+    this.onChange(this.peers);
   }
 
-  async handleMessage(message: any) {
-    const pc = this.peers.find(d => d.id === message.id);
+  async handleMessage(message: Message) {
+    const pc = this.peers.find(d => d.peerInfo.id === message.id);
     if (!pc) {  // todo 目前消息为广播模式，需要过滤
       return;
     }
@@ -101,8 +99,6 @@ export default class Room {
       pc.setRemoteDescription(new RTCSessionDescription(message.description));
     } else if (message.type === 'candidate') {
       pc.addIceCandidate(new RTCIceCandidate(message.candidate));
-    } else if (message.type === 'bye') {
-      this.handleRemoteHangup();
     }
   }
 
@@ -110,18 +106,8 @@ export default class Room {
     this.socket?.emit('message', message);
   }
 
-  handleRemoteHangup() {
-    this.stop();
-  }
-
   hangup() {
     trace('挂断');
     this.socket?.disconnect();
-    this.stop();
-    this.sendMessage('bye');
-  }
-
-  stop() {
-
   }
 }

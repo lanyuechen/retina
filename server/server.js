@@ -66,8 +66,4 @@ io.sockets.on('connection', (socket) => {
 
     peers.push(peer);
   });
-
-  socket.on('bye', () => {
-    console.log('received bye');
-  });
 });

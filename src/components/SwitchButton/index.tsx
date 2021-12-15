@@ -4,6 +4,7 @@ import {
   PushpinOutlined,
 } from '@ant-design/icons';
 import Icon from '@/components/Icon';
+import Btn from '@/pages/Room/Footer/Btn';
 
 interface PropType {
   active: boolean;
@@ -19,4 +20,19 @@ export const VideoIcon = ({ active }: PropType) => {
 
 export const PinIcon = ({ active }: PropType) => {
   return active ? <PushpinOutlined /> : <PushpinOutlined />;
+}
+
+export default (props: any) => {
+  const { children, ...others } = props;
+
+  return (
+    <Btn
+      {...others}
+      style={{float: 'left'}}
+      // icon={<AudioIcon active={me.audio} />}
+      // onClick={me.audio ? service.stopLocalAudio : service.startLocalAudio}
+    >
+      {children}
+    </Btn>
+  )
 }

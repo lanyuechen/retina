@@ -4,7 +4,7 @@
     "start": "umi dev",
     "build": "umi build",
     "test": "umi test",
-    "lint": "eslint {src,mock,tests}/**/*.{ts,tsx} --fix",
+    "lint": "eslint src/**/*.{ts,tsx} --fix",
     "precommit": "lint-staged"
   },
   "dependencies": {
@@ -21,6 +21,8 @@
     "@types/react-copy-to-clipboard": "^5.0.2",
     "@types/react-dom": "^16.0.11",
     "@types/react-test-renderer": "^16.0.3",
+    "@typescript-eslint/eslint-plugin": "^5.7.0",
+    "@typescript-eslint/parser": "^5.7.0",
     "@umijs/preset-react": "^1.8.30",
     "babel-eslint": "^9.0.0",
     "eslint": "^5.4.0",
@@ -33,6 +35,7 @@
     "husky": "^0.14.3",
     "lint-staged": "^7.2.2",
     "react-test-renderer": "^16.7.0",
+    "typescript": "^4.5.4",
     "umi": "^3.5.20"
   },
   "lint-staged": {

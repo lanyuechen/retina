@@ -1,6 +1,10 @@
-import { useLocation } from 'react-router-dom';
+import { useLocation } from 'umi';
 
-export default function useQuery(): any {
+interface IQuery {
+  [key: string]: string;
+}
+
+export default function useQuery(): IQuery {
   const query = new URLSearchParams(useLocation().search);
   return [...query.entries()].reduce((p, n) => ({...p, [n[0]]: n[1]}), {});
 }

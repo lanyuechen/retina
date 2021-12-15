@@ -15,48 +15,52 @@ import Chat from '@/components/Chat';
 
 import style from './style.less';
 
+import type { PeerState } from './typings';
+
 export default (props: any) => {
   const { id } = props.match.params;
 
-  const store = useRef<any>({});
-  const ref = useRef<HTMLVideoElement>(null);
-  const [peers, setPeers] = useState<any[]>([]);
-
-  console.log('=====', peers);
-
   const { username } = useQuery();
-  const [ layout, setLayout ] = useState('gallery');
-  const [ drawerVisible, setDrawerVisible ] = useState(true);
 
-  const handlePeerChange = (pcs: Peer[]) => {
-    setPeers([
-      {
-        ...store.current.room.me,
-        isMe: true,
-        mediaStream: store.current.room.localStream,
-      },
-      ...pcs.map(d => ({
-        ...d.peerInfo,
-        mediaStream: d.remoteStream,
-      })),
-    ]);
+  const [peers, setPeers] = useState<PeerState[]>([]);
+  const [layout, setLayout] = useState<string>('gallery');
+  const [drawerVisible, setDrawerVisible] = useState(true);
+
+  const store = useRef<{room?: Room}>({});
+
+  const handleRoomChange = (pcs: Peer[]) => {
+    if (store.current.room) {
+      setPeers([
+        {
+          ...store.current.room.me!,
+          isMe: true,
+          mediaStream: store.current.room.localStream,
+        },
+        ...pcs.map(d => ({
+          ...d.peerInfo,
+          mediaStream: d.remoteStream,
+        })),
+      ]);
+    }
   }
 
   useEffect(() => {
     store.current.room = new Room({
       roomId: id,
-      localVideo: ref.current,
-      onPeerChange: handlePeerChange,
+      onChange: handleRoomChange,
     });
 
     store.current.room.join({nickname: username});
   }, []);
 
   const handleLayoutChange = (type: string) => {
-    if (type !== 'thumbnail') {
-      // service.pin('', false);
-    }
     setLayout(type);
+  }
+
+  const handleAction = (key: string) => {
+    if (key === 'show-peers') {
+      setDrawerVisible(true);
+    }
   }
 
   return (
@@ -68,9 +72,14 @@ export default (props: any) => {
         <div className={style.content}>
           <Content layout={layout} peers={peers} />
         </div>
-        <div className={style.footer}>
-          <Footer showParticipants={() => setDrawerVisible(true)} />
-        </div>
+        {peers[0] && (
+          <div className={style.footer}>
+            <Footer
+              peers={peers}
+              onAction={handleAction}
+            />
+          </div>
+        )}
       </div>
       <Drawer
         className={style.drawer}

@@ -7,3 +7,9 @@ export function uuid() {
   seed = seed.replace('y', (Math.random() * 16 & 0x3 | 0x8).toString(16));
   return seed.replace(/-/g, '').substr(0, 24);
 }
+
+export function noop() {}
+
+export function getPcId(id1: string, id2: string) {
+  return [id1, id2].sort().join('-');
+}

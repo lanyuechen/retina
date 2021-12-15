@@ -7,6 +7,7 @@ export default [
     component: '@/layouts/index',
     routes: [
       { path: '/', component: '@/pages/index'},
+      { path: '/entry', component: '@/pages/Entry'},
       { path: '/room/:id', component: '@/pages/Room'},
       { component: './404' },
     ]

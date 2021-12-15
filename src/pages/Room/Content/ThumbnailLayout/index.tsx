@@ -1,7 +1,8 @@
 import React, { useRef, useEffect, useState, useMemo } from 'react';
 import { Carousel, Row, Col, Button } from 'antd';
-import VideoCard from '../VideoCard';
 import { LeftOutlined, RightOutlined } from '@ant-design/icons';
+import VideoCard from '@/components/VideoCard';
+
 import style from './style.less';
 
 export default (props: any) => {

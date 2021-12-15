@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button, Dropdown, Tooltip } from 'antd';
 import { MoreOutlined } from '@ant-design/icons';
-import { AudioIcon } from '@/components/ToggleIcon';
+import { AudioOutlined, AudioMutedOutlined } from '@ant-design/icons';
 import ExtraMenu from './ExtraMenu';
 import style from './style.less';
 
@@ -19,7 +19,7 @@ export default (props: PropType) => {
         <Button
           // onClick={participant.audio ? service.stopLocalAudio : service.startLocalAudio}
           shape="circle"
-          icon={<AudioIcon active={peer.audio} />}
+          icon={peer.audio ? <AudioOutlined /> : <AudioMutedOutlined className="color-danger" />}
         />
       </Tooltip>
     

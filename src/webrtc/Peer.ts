@@ -1,23 +1,22 @@
-import Room from './Room';
 import { trace } from './utils/log';
+import { noop } from './utils/utils';
+
+import type { Room, PeerInfo, PeerInitParams } from './typings';
 
 export default class Peer {
-  id: string;
-  peerInfo: any;
+  peerInfo: PeerInfo;
   room: Room;
   peerConnection: RTCPeerConnection;
-  onChange: () => void;
   remoteStream: MediaStream | undefined;
+  onChange: () => void;
 
-  constructor({ room, localStream, peerInfo, onChange }: any) {
-    this.id = peerInfo.peerId;
-    this.peerInfo = peerInfo;
+  constructor({ room, localStream, peerInfo, onChange }: PeerInitParams) {
     this.room = room;
-    this.onChange = onChange;
+    this.peerInfo = peerInfo;
+    this.onChange = onChange || noop;
 
     const servers = undefined;
 
-    // Create peer connections and add behavior.
     this.peerConnection = new RTCPeerConnection(servers);
     this.peerConnection.addEventListener('icecandidate', this.handleIceCandidate.bind(this));
     this.peerConnection.addEventListener('iceconnectionstatechange', this.handleConnectionChange.bind(this));
@@ -33,7 +32,7 @@ export default class Peer {
     if (event.candidate) {
       this.room.sendMessage({
         type: 'candidate',
-        id: this.id,
+        id: this.peerInfo.id,
         candidate: {
           type: 'candidate',
           sdpMLineIndex: event.candidate.sdpMLineIndex,
@@ -71,7 +70,7 @@ export default class Peer {
     this.peerConnection.setLocalDescription(description);
     this.room.sendMessage({
       type: description.type,
-      id: this.id,
+      id: this.peerInfo.id,
       description,
     });
   }
@@ -82,7 +81,7 @@ export default class Peer {
     this.peerConnection.setLocalDescription(description);
     this.room.sendMessage({
       type: description.type,
-      id: this.id,
+      id: this.peerInfo.id,
       description,
     });
   }

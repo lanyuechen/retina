@@ -1,8 +1,10 @@
 import React, { useRef, useState, useMemo } from 'react';
 import { Row, Col, Carousel, Button } from 'antd';
 import { LeftOutlined, RightOutlined } from '@ant-design/icons';
-import { GalleryLayoutProps } from './typings';
-import VideoCard from '../VideoCard';
+import VideoCard from '@/components/VideoCard';
+
+import type { GalleryLayoutProps } from './typings';
+
 import style from './style.less';
 
 export default (props: GalleryLayoutProps) => {
