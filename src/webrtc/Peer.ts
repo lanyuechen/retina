@@ -8,6 +8,7 @@ export default class Peer {
   room: Room;
   peerConnection: RTCPeerConnection;
   remoteStream: MediaStream | undefined;
+  senders: RTCRtpSender[];
   onChange: () => void;
 
   constructor({ room, localStream, peerInfo, onChange }: PeerInitParams) {
@@ -22,12 +23,10 @@ export default class Peer {
     this.peerConnection.addEventListener('iceconnectionstatechange', this.handleConnectionChange.bind(this));
     this.peerConnection.addEventListener('track', this.handleRemoteTrack.bind(this));
 
-    for (let track of localStream.getTracks()) {
-      this.peerConnection.addTrack(track, localStream);
-    }
+    this.senders = localStream.getTracks().map(track => this.peerConnection.addTrack(track, localStream));
   }
 
-  // Connects with new peer candidate.
+  // 当调用PeerConnection.setLocalDescription()后触发，并发消息给其他用户
   handleIceCandidate(event: RTCPeerConnectionIceEvent) {
     if (event.candidate) {
       this.room.sendMessage({
@@ -42,7 +41,7 @@ export default class Peer {
     }
   }
 
-  // Logs changes to the connection state.
+  // iceconnection 状态监控
   handleConnectionChange(event: any) {
     const peerConnection = event.target;
     trace(`ICE state: ${peerConnection.iceConnectionState}.`);
