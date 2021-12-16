@@ -1,18 +1,19 @@
 import { trace } from './utils/log';
 import { noop } from './utils/utils';
 
-import type { Room, PeerInfo, PeerInitParams } from './typings';
+import type { Socket } from 'socket.io-client';
+import type { PeerInfo, PeerInitParams, Message } from './typings';
 
 export default class Peer {
   peerInfo: PeerInfo;
-  room: Room;
+  socket: Socket;
   peerConnection: RTCPeerConnection;
   remoteStream: MediaStream | undefined;
   senders: RTCRtpSender[];
   onChange: () => void;
 
-  constructor({ room, localStream, peerInfo, onChange }: PeerInitParams) {
-    this.room = room;
+  constructor({ socket, localStream, peerInfo, onChange }: PeerInitParams) {
+    this.socket = socket;
     this.peerInfo = peerInfo;
     this.onChange = onChange || noop;
 
@@ -23,13 +24,15 @@ export default class Peer {
     this.peerConnection.addEventListener('iceconnectionstatechange', this.handleConnectionChange.bind(this));
     this.peerConnection.addEventListener('track', this.handleRemoteTrack.bind(this));
 
+    this.socket.on('message', this.handleMessage.bind(this));
+
     this.senders = localStream.getTracks().map(track => this.peerConnection.addTrack(track, localStream));
   }
 
   // 当调用PeerConnection.setLocalDescription()后触发，并发消息给其他用户
   handleIceCandidate(event: RTCPeerConnectionIceEvent) {
     if (event.candidate) {
-      this.room.sendMessage({
+      this.sendMessage({
         type: 'candidate',
         id: this.peerInfo.id,
         candidate: {
@@ -59,6 +62,22 @@ export default class Peer {
     this.onChange();
   }
 
+  async handleMessage(message: Message) {
+    if (this.peerInfo.id !== message.id) {
+      return;
+    }
+    trace('收到消息', message);
+
+    if (message.type === 'offer') {
+      this.setRemoteDescription(new RTCSessionDescription(message.description));
+      this.createAnswer();
+    } else if (message.type === 'answer') {
+      this.setRemoteDescription(new RTCSessionDescription(message.description));
+    } else if (message.type === 'candidate') {
+      this.addIceCandidate(new RTCIceCandidate(message.candidate));
+    }
+  }
+
   addIceCandidate(candidate: RTCIceCandidate) {
     this.peerConnection.addIceCandidate(candidate);
   }
@@ -67,7 +86,7 @@ export default class Peer {
     trace('发送offser');
     const description = await this.peerConnection.createOffer();
     this.peerConnection.setLocalDescription(description);
-    this.room.sendMessage({
+    this.sendMessage({
       type: description.type,
       id: this.peerInfo.id,
       description,
@@ -78,7 +97,7 @@ export default class Peer {
     trace('发送answer');
     const description = await this.peerConnection.createAnswer();
     this.peerConnection.setLocalDescription(description);
-    this.room.sendMessage({
+    this.sendMessage({
       type: description.type,
       id: this.peerInfo.id,
       description,
@@ -88,6 +107,10 @@ export default class Peer {
   setRemoteDescription(description: RTCSessionDescription) {
     trace('setRemoteDescription', description);
     this.peerConnection.setRemoteDescription(description);
+  }
+
+  sendMessage(message: any) {
+    this.socket?.emit('message', message);
   }
 
   destroy() {

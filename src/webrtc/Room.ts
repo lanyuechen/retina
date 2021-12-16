@@ -3,7 +3,7 @@ import Peer from './Peer';
 import { trace } from "./utils/log";
 import { getPcId } from './utils/utils';
 
-import type { RoomInitParams, PeerBasicInfo, PeerInfo, Message } from './typings';
+import type { RoomInitParams, PeerBasicInfo, PeerInfo } from './typings';
 
 export default class Room {
   roomId: string;
@@ -41,7 +41,6 @@ export default class Room {
     this.socket.on('joined-room', this.handleJoinedRoom.bind(this));
     this.socket.on('peer-join-room', this.handlePeerJoinRoom.bind(this));
     this.socket.on('peer-leave-room', this.handlePeerLeaveRoom.bind(this));
-    this.socket.on('message', this.handleMessage.bind(this));
   }
 
   async handleJoinedRoom({ peer, peers, roomId }: {peer: any; peers: any[]; roomId: string}) {
@@ -50,7 +49,7 @@ export default class Room {
     this.me = peer;
 
     this.peers = peers.map(d => new Peer({
-      room: this,
+      socket: this.socket!,
       localStream: this.localStream!,
       peerInfo: {
         ...d,
@@ -64,7 +63,7 @@ export default class Room {
   handlePeerJoinRoom({ peer, roomId }: {peer: PeerInfo; roomId: string}) {
     trace(`${peer.nickname} 加入房间“${roomId}”`);
     const newPeer = new Peer({
-      room: this,
+      socket: this.socket!,
       localStream: this.localStream!,
       peerInfo: {
         ...peer,
@@ -83,27 +82,6 @@ export default class Room {
     peer?.destroy();
     this.peers = this.peers.filter(d => d.peerInfo.clientId !== clientId);
     this.onChange(this.peers);
-  }
-
-  async handleMessage(message: Message) {
-    const pc = this.peers.find(d => d.peerInfo.id === message.id);
-    if (!pc) {  // todo 目前消息为广播模式，需要过滤
-      return;
-    }
-    trace('收到消息', message, this.peers);
-
-    if (message.type === 'offer') {
-      pc.setRemoteDescription(new RTCSessionDescription(message.description));
-      pc.createAnswer();
-    } else if (message.type === 'answer') {
-      pc.setRemoteDescription(new RTCSessionDescription(message.description));
-    } else if (message.type === 'candidate') {
-      pc.addIceCandidate(new RTCIceCandidate(message.candidate));
-    }
-  }
-
-  sendMessage(message: any) {
-    this.socket?.emit('message', message);
   }
 
   hangup() {
