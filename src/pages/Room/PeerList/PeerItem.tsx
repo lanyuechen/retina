@@ -1,8 +1,10 @@
 import React from 'react';
 import { List, Avatar } from 'antd';
-import Icon from '@/components/Icon';
 import { AudioOutlined, AudioMutedOutlined } from '@ant-design/icons';
+
+import Icon from '@/components/Icon';
 import Tool from '@/components/Tool';
+
 import style from './style.less';
 
 export default (props: {peer: any}) => {

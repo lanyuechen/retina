@@ -9,8 +9,8 @@ import useQuery from '@/utils/use-query';
 
 import Header from './Header';
 import Content from './Content';
-import Footer from './Footer';
-import Participants from './Participants';
+import Toolbar from './Toolbar';
+import PeerList from './PeerList';
 import Chat from '@/components/Chat';
 
 import style from './style.less';
@@ -74,7 +74,7 @@ export default (props: any) => {
         </div>
         {peers[0] && (
           <div className={style.footer}>
-            <Footer
+            <Toolbar
               peers={peers}
               onAction={handleAction}
             />
@@ -88,7 +88,7 @@ export default (props: any) => {
         mask={false}
         onClose={() => setDrawerVisible(false)}
       >
-        <Participants peers={peers} />
+        <PeerList peers={peers} />
       </Drawer>
       <Chat />
     </div>

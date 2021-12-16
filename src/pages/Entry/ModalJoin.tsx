@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { history } from 'umi';
 import { Form, Input, Modal, Button } from 'antd';
-import Btn from '@/pages/Room/Footer/Btn';
+import Btn from '@/components/Btn';
 import { AudioIcon, VideoIcon } from '@/components/SwitchButton';
 import VideoCard from '@/components/VideoCard';
 

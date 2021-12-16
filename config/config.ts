@@ -12,6 +12,7 @@ export default defineConfig({
   history: {
     type: 'hash'
   },
+  ignoreMomentLocale: true,
   routes,
   proxy,
   hash: true,

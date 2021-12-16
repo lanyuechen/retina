@@ -4,7 +4,7 @@ import {
   PushpinOutlined,
 } from '@ant-design/icons';
 import Icon from '@/components/Icon';
-import Btn from '@/pages/Room/Footer/Btn';
+import Btn from '@/components/Btn';
 
 interface PropType {
   active: boolean;

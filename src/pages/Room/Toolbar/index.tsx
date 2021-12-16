@@ -7,7 +7,7 @@ import {
   AudioOutlined, AudioMutedOutlined,
 } from '@ant-design/icons';
 import Icon from '@/components/Icon';
-import Btn from './Btn';
+import Btn from '@/components/Btn';
 import style from './style.less';
 
 interface PropType {

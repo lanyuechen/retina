@@ -1,8 +1,9 @@
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
 import { Input, Tabs, List, Empty, Button, Row, Col, Tooltip } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
-import Participant from './Participant';
 import Icon from '@/components/Icon';
+
+import PeerItem from './PeerItem';
 
 import style from './style.less';
 
@@ -11,7 +12,7 @@ export default (props: any) => {
   const [ keyword, setKeyword ] = useState('');
 
   return (
-    <div className={style.container}>
+    <div className={style.peerList}>
       <div className={style.search}>
         <h2>参会人</h2>
         <Row gutter={8}>
@@ -39,7 +40,7 @@ export default (props: any) => {
               {peers
                 .filter((d: any) => !keyword || d.peerName.includes(keyword))
                 .map((d: any, i: number) => (
-                  <Participant key={i} peer={d} />
+                  <PeerItem key={i} peer={d} />
                 )
               )}
             </List>
