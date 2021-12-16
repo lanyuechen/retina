@@ -78,6 +78,14 @@ export default class Peer {
     }
   }
 
+  removeTrack(type: 'audio' | 'video') {
+    this.senders.forEach(sender => {
+      if (sender.track?.kind === type) {
+        this.peerConnection.removeTrack(sender);
+      }
+    });
+  }
+
   addIceCandidate(candidate: RTCIceCandidate) {
     this.peerConnection.addIceCandidate(candidate);
   }

@@ -13,6 +13,7 @@ export default class Room {
   socket: Socket | undefined;
   onChange: any;
   mediaStreamConstraints: any;
+  video: boolean;
 
   constructor({ roomId, constraints, onChange }: RoomInitParams) {
     this.roomId = roomId;
@@ -22,6 +23,16 @@ export default class Room {
       video: true,
     };
     this.onChange = onChange;
+    this.video = !!this.mediaStreamConstraints.video;
+  }
+
+  toggleVideo() {
+    if (this.video) {
+      // todo 关闭本地视频
+    } else {
+      // todo 开启本地视频
+    }
+    this.video = !this.video;
   }
 
   async join(peerInfo: PeerBasicInfo) {

@@ -60,6 +60,15 @@ export default (props: any) => {
   const handleAction = (key: string) => {
     if (key === 'show-peers') {
       setDrawerVisible(true);
+    } else if (key === 'toggle-video') {
+      // todo toggle video
+      store.current.room?.toggleVideo();
+    } else if (key === 'toggle-audio') {
+      // todo toggle audio
+    } else if (key === 'leave') {
+      // todo leave room
+    } else if (key === 'share') {
+      // todo share screen
     }
   }
 

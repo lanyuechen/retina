@@ -42,6 +42,9 @@ export default (props: PropType) => {
       content: '是否要退出会议？',
       okText: '是',
       cancelText: '否',
+      onOk: () => {
+        onAction('leave');
+      }
     })
   }
 
@@ -49,14 +52,14 @@ export default (props: PropType) => {
     <div className={style.footer}>
       <Btn
         icon={me.audio ? <AudioOutlined /> : <AudioMutedOutlined className="color-danger" />}
-        // onClick={me.audio ? service.stopLocalAudio : service.startLocalAudio}
+        onClick={() => onAction('toggle-audio')}
         dropdown={menu}
       >
         麦克风
       </Btn>
       <Btn
         icon={me.video ? <Icon type="icon-camera" /> : <Icon type="icon-camera-disabled" className="color-danger" />}
-        // onClick={me.video ? service.stopLocalPreview : service.startLocalPreview}
+        onClick={() => onAction('toggle-video')}
         dropdown={menu}
       >
         摄像头
@@ -70,7 +73,7 @@ export default (props: PropType) => {
       </Btn>
       <Btn 
         icon={<Icon type="icon-share-screen" style={{color: 'rgb(52, 199, 58)'}} />}
-        // onClick={service.openShare}
+        onClick={() => onAction('share')}
         // dropdown={menu}
       >
         共享
