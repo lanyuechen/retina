@@ -9,6 +9,7 @@ import style from './style.less';
 
 export default (props: {peer: any}) => {
   const { peer } = props;
+  console.log('====', peer)
 
   return (
     <List.Item
