@@ -8,6 +8,7 @@ export default class Peer {
   peerInfo: PeerInfo;
   socket: Socket;
   peerConnection: RTCPeerConnection;
+  dataChannel: RTCDataChannel;
   remoteStream: MediaStream | undefined;
   onChange: () => void;
 
@@ -25,6 +26,11 @@ export default class Peer {
     this.peerConnection.addEventListener('icecandidate', this.handleIceCandidate.bind(this));
     this.peerConnection.addEventListener('iceconnectionstatechange', this.handleConnectionChange.bind(this));
     this.peerConnection.addEventListener('track', this.handleRemoteTrack.bind(this));
+
+    this.dataChannel = this.peerConnection.createDataChannel('datachannel', {negotiated: true, id: 0}); // 协商方式
+    this.dataChannel.addEventListener('open', this.handleDataChannelChange.bind(this));
+    this.dataChannel.addEventListener('close', this.handleDataChannelChange.bind(this));
+    this.dataChannel.addEventListener('message', this.handleDataChannelMessage.bind(this));
 
     this.socket.on('message', this.handleMessage.bind(this));
 
@@ -73,7 +79,23 @@ export default class Peer {
     this.onChange();
   }
 
-  async handleMessage(message: Message) {
+  handleDataChannelChange() {
+    trace(`dataChannel state: ${this.dataChannel.readyState}`);
+  }
+
+  handleDataChannelMessage(event: MessageEvent) {
+    const message = JSON.parse(event.data);
+    trace('Receive message by data channel', message);
+
+    if (message.type === 'datachannel') {
+      this.dataChannel = message.channel;
+    } else if (message.type === 'state') {
+      Object.assign(this, message.state);
+      this.onChange();
+    }
+  }
+
+  handleMessage(message: Message) {
     if (this.peerInfo.id !== message.id) {
       return;
     }
@@ -90,6 +112,14 @@ export default class Peer {
       Object.assign(this, message.state);
       this.onChange();
     }
+  }
+
+  sendMessage(message: any) {
+    this.socket?.emit('message', message);
+  }
+
+  sendMessageByDataChannel(message: any) {
+    this.dataChannel.send(JSON.stringify(message));
   }
 
   setMute(type: 'audio' | 'video', muting: boolean) {
@@ -135,10 +165,6 @@ export default class Peer {
   setRemoteDescription(description: RTCSessionDescription) {
     trace('setRemoteDescription', description);
     this.peerConnection.setRemoteDescription(description);
-  }
-
-  sendMessage(message: any) {
-    this.socket?.emit('message', message);
   }
 
   destroy() {

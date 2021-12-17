@@ -23,7 +23,7 @@ export interface PeerInitParams {
 }
 
 export interface Message {
-  type: 'offer' | 'answer' | 'candidate' | 'message' | 'state';
+  type: 'offer' | 'answer' | 'candidate' | 'datachannel' | 'message' | 'state';
   id: string;
   description?: any;
   candidate?: any;
