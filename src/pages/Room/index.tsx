@@ -35,10 +35,13 @@ export default (props: any) => {
           ...store.current.room.me!,
           isMe: true,
           mediaStream: store.current.room.localStream,
+          video: store.current.room.video,
         },
         ...pcs.map(d => ({
           ...d.peerInfo,
           mediaStream: d.remoteStream,
+          pc: d,
+          video: d.video,
         })),
       ]);
     }
@@ -61,12 +64,11 @@ export default (props: any) => {
     if (key === 'show-peers') {
       setDrawerVisible(true);
     } else if (key === 'toggle-video') {
-      // todo toggle video
       store.current.room?.toggleVideo();
     } else if (key === 'toggle-audio') {
-      // todo toggle audio
+      store.current.room?.toggleAudio();
     } else if (key === 'leave') {
-      // todo leave room
+      store.current.room?.hangup();
     } else if (key === 'share') {
       // todo share screen
     }

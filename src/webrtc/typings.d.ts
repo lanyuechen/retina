@@ -29,8 +29,9 @@ export interface RoomInitParams {
 }
 
 export interface Message {
-  type: 'offer' | 'answer' | 'candidate' | 'message';
+  type: 'offer' | 'answer' | 'candidate' | 'message' | 'state';
   id: string;
   description?: any;
   candidate?: any;
+  [key: string]: any;
 }

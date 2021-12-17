@@ -14,6 +14,7 @@ export default class Room {
   onChange: any;
   mediaStreamConstraints: any;
   video: boolean;
+  audio: boolean;
 
   constructor({ roomId, constraints, onChange }: RoomInitParams) {
     this.roomId = roomId;
@@ -21,18 +22,21 @@ export default class Room {
     this.me = null;
     this.mediaStreamConstraints = constraints || {
       video: true,
+      audio: true,
     };
     this.onChange = onChange;
     this.video = !!this.mediaStreamConstraints.video;
+    this.audio = !!this.mediaStreamConstraints.audio;
   }
 
   toggleVideo() {
-    if (this.video) {
-      // todo 关闭本地视频
-    } else {
-      // todo 开启本地视频
-    }
+    this.peers.forEach(pc => pc.setMute('video', this.video));
     this.video = !this.video;
+  }
+
+  toggleAudio() {
+    this.peers.forEach(pc => pc.setMute('audio', this.audio));
+    this.audio = !this.audio;
   }
 
   async join(peerInfo: PeerBasicInfo) {

@@ -9,8 +9,10 @@ export default class Peer {
   socket: Socket;
   peerConnection: RTCPeerConnection;
   remoteStream: MediaStream | undefined;
-  senders: RTCRtpSender[];
   onChange: () => void;
+
+  video: boolean = false;
+  audio: boolean = false;
 
   constructor({ socket, localStream, peerInfo, onChange }: PeerInitParams) {
     this.socket = socket;
@@ -26,7 +28,15 @@ export default class Peer {
 
     this.socket.on('message', this.handleMessage.bind(this));
 
-    this.senders = localStream.getTracks().map(track => this.peerConnection.addTrack(track, localStream));
+    localStream.getTracks().map(track => {
+      if (track.kind === 'video') {
+        this.video = true;
+      }
+      if (track.kind === 'audio') {
+        this.audio = true;
+      }
+      this.peerConnection.addTrack(track);
+    });
   }
 
   // 当调用PeerConnection.setLocalDescription()后触发，并发消息给其他用户
@@ -51,6 +61,7 @@ export default class Peer {
   }
 
   handleRemoteTrack(event: RTCTrackEvent) {
+    trace('remote track', event);
     if (event.streams && event.streams[0]) {
       this.remoteStream = event.streams[0];
     } else {
@@ -75,13 +86,22 @@ export default class Peer {
       this.setRemoteDescription(new RTCSessionDescription(message.description));
     } else if (message.type === 'candidate') {
       this.addIceCandidate(new RTCIceCandidate(message.candidate));
+    } else if (message.type === 'state') {
+      Object.assign(this, message.state);
+      this.onChange();
     }
   }
 
-  removeTrack(type: 'audio' | 'video') {
-    this.senders.forEach(sender => {
+  setMute(type: 'audio' | 'video', muting: boolean) {
+    this.peerConnection.getSenders().forEach(sender => {
       if (sender.track?.kind === type) {
-        this.peerConnection.removeTrack(sender);
+        sender.track.enabled = !muting;
+      }
+    });
+    this.sendMessage({
+      type: 'state',
+      state: {
+        [type]: !muting,
       }
     });
   }
