@@ -10,6 +10,7 @@
     "sourceMap": true,
     "baseUrl": ".",
     "strict": true,
+    "suppressImplicitAnyIndexErrors": true,
     "paths": {
       "@/*": ["src/*"],
       "@@/*": ["src/.umi/*"],

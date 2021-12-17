@@ -3,30 +3,30 @@ import Peer from './Peer';
 import { trace } from "./utils/log";
 import { getPcId } from './utils/utils';
 
-import type { RoomInitParams, PeerBasicInfo, PeerInfo } from './typings';
+import type { PeerBasicInfo, PeerInfo } from './typings';
+
+const ROOM = '__ROOM__';
 
 export default class Room {
   roomId: string;
   peers: Peer[];
-  me: PeerInfo | null;
+  me: PeerInfo | null = null;
   localStream: MediaStream | undefined;
   socket: Socket | undefined;
-  onChange: any;
   mediaStreamConstraints: any;
-  video: boolean;
-  audio: boolean;
+  video: boolean = false;
+  audio: boolean = false;
 
-  constructor({ roomId, constraints, onChange }: RoomInitParams) {
+  static getInstance(roomId: string) {
+    if (!window[ROOM]) {
+      window[ROOM] = new Room(roomId);
+    }
+    return window[ROOM];
+  }
+
+  constructor(roomId: string) {
     this.roomId = roomId;
     this.peers = [];
-    this.me = null;
-    this.mediaStreamConstraints = constraints || {
-      video: true,
-      audio: true,
-    };
-    this.onChange = onChange;
-    this.video = !!this.mediaStreamConstraints.video;
-    this.audio = !!this.mediaStreamConstraints.audio;
   }
 
   toggleVideo() {
@@ -39,7 +39,15 @@ export default class Room {
     this.audio = !this.audio;
   }
 
-  async join(peerInfo: PeerBasicInfo) {
+  async join(peerInfo: PeerBasicInfo, constraints?: any) {
+    this.mediaStreamConstraints = constraints || {
+      video: true,
+      audio: true,
+    };
+
+    this.video = !!this.mediaStreamConstraints.video;
+    this.audio = !!this.mediaStreamConstraints.audio;
+
     // 连接socket
     this.connect();
 
@@ -70,9 +78,10 @@ export default class Room {
         ...d,
         id: getPcId(d.clientId, peer.clientId),
       },
-      onChange: () => this.onChange([...this.peers]),
+      onChange: () => this.emit('change', this.peers),
     }));
-    this.onChange(this.peers);
+
+    this.emit('change', this.peers);
   }
 
   handlePeerJoinRoom({ peer, roomId }: {peer: PeerInfo; roomId: string}) {
@@ -84,23 +93,34 @@ export default class Room {
         ...peer,
         id: getPcId(this.me!.clientId, peer.clientId),
       },
-      onChange: () => this.onChange([...this.peers]),
+      onChange: () => this.emit('change', this.peers),
     });
     newPeer.createOffer();
 
     this.peers = [...this.peers, newPeer];
-    this.onChange(this.peers);
+    this.emit('change', this.peers);
   }
 
   handlePeerLeaveRoom(clientId: string) {
     const peer = this.peers.find(d => d.peerInfo.clientId === clientId);
     peer?.destroy();
     this.peers = this.peers.filter(d => d.peerInfo.clientId !== clientId);
-    this.onChange(this.peers);
+    this.emit('change', this.peers);
   }
 
   hangup() {
     trace('挂断');
     this.socket?.disconnect();
+  }
+
+  on(key: string, fn: (...args: any) => void) {
+    addEventListener(key, (e: any) => {
+      fn(...e.detail);
+    });
+  }
+
+  emit(key: string, ...args: any) {
+    const event = new CustomEvent(key, { detail: args });
+    dispatchEvent(event);
   }
 }

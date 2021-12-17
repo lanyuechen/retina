@@ -1,59 +1,50 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { Drawer } from 'antd';
 
 import Peer from '@/webrtc/Peer';
-import Room from '@/webrtc/Room';
 
+import Chat from '@/components/Chat';
 import useQuery from '@/utils/use-query';
+import useRoom from '@/utils/use-room';
 
 import Header from './Header';
 import Content from './Content';
 import Toolbar from './Toolbar';
 import PeerList from './PeerList';
-import Chat from '@/components/Chat';
 
 import style from './style.less';
 
 import type { PeerState } from './typings';
 
-export default (props: any) => {
-  const { id } = props.match.params;
-
+export default () => {
   const { username } = useQuery();
 
   const [peers, setPeers] = useState<PeerState[]>([]);
   const [layout, setLayout] = useState<string>('gallery');
   const [drawerVisible, setDrawerVisible] = useState(true);
 
-  const store = useRef<{room?: Room}>({});
+  const room = useRoom();
 
-  const handleRoomChange = (pcs: Peer[]) => {
-    if (store.current.room) {
-      setPeers([
-        {
-          ...store.current.room.me!,
-          isMe: true,
-          mediaStream: store.current.room.localStream,
-          video: store.current.room.video,
-        },
-        ...pcs.map(d => ({
-          ...d.peerInfo,
-          mediaStream: d.remoteStream,
-          pc: d,
-          video: d.video,
-        })),
-      ]);
-    }
-  }
+  room.on('change', (pcs: Peer[]) => {
+    setPeers([
+      {
+        ...room.me!,
+        isMe: true,
+        mediaStream: room.localStream,
+        video: room.video,
+      },
+      ...pcs.map(d => ({
+        ...d.peerInfo,
+        mediaStream: d.remoteStream,
+        pc: d,
+        video: d.video,
+      })),
+    ]);
+  });
 
   useEffect(() => {
-    store.current.room = new Room({
-      roomId: id,
-      onChange: handleRoomChange,
-    });
-
-    store.current.room.join({nickname: username});
+    room.join({nickname: username});
   }, []);
 
   const handleLayoutChange = (type: string) => {
@@ -64,11 +55,11 @@ export default (props: any) => {
     if (key === 'show-peers') {
       setDrawerVisible(true);
     } else if (key === 'toggle-video') {
-      store.current.room?.toggleVideo();
+      room.toggleVideo();
     } else if (key === 'toggle-audio') {
-      store.current.room?.toggleAudio();
+      room.toggleAudio();
     } else if (key === 'leave') {
-      store.current.room?.hangup();
+      room.hangup();
     } else if (key === 'share') {
       // todo share screen
     }

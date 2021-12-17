@@ -4,12 +4,22 @@ import { AudioOutlined, AudioMutedOutlined } from '@ant-design/icons';
 
 import Icon from '@/components/Icon';
 import Tool from '@/components/Tool';
+import useRoom from '@/utils/use-room';
 
 import style from './style.less';
 
 export default (props: {peer: any}) => {
   const { peer } = props;
-  console.log('====', peer)
+
+  const room = useRoom();
+
+  const handleAction = (key: string) => {
+    if (key === 'toggle-video') {
+      room.toggleVideo();
+    } else if (key === 'toggle-audio') {
+      room.toggleAudio();
+    }
+  }
 
   return (
     <List.Item
@@ -26,14 +36,14 @@ export default (props: {peer: any}) => {
       <List.Item.Meta
         avatar={
           <Avatar style={{ backgroundColor: '#1890ff' }}>
-            {peer.nickname && peer.nickname[0].toUpperCase()}
+            {peer.nickname}
           </Avatar>
         }
         title={`${peer.nickname}${peer.isMe ? '(我)' : ''}`}
         description={peer.isMe && <div className={style.host}>主持人</div>}
       />
       
-      <Tool className={style.tool} peer={peer} />
+      <Tool className={style.tool} peer={peer} onAction={handleAction} />
 
     </List.Item>
   )

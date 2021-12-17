@@ -8,51 +8,32 @@ import {
 import Icon from '@/components/Icon';
 
 interface PropType {
-  participant: any;
+  peer: any;
+  [key: string]: any;
 }
 
 export default (props: PropType) => {
   const service = {};
-  const { participant, ...others } = props;
-  const { peerId, local, pinned, video } = participant;
-
-  const toggleVideo = () => {
-    // if (local) {
-    //   if (video) {
-    //     service.stopLocalPreview();
-    //   } else {
-    //     service.startLocalPreview();
-    //   }
-    // } else {
-    //   if (video) {
-    //     service.stopRemoteView(peerId);
-    //   } else {
-    //     message.info('已向该用户发送请求！');
-    //   }
-    // }
-  }
-
-  const togglePin = () => {
-    // service.pin(peerId, !pinned);
-  }
+  const { peer, ...others } = props;
+  const { peerId, local, pinned, video } = peer;
 
   return (
     <Menu {...others}>
-      <Menu.Item icon={!video ? <Icon type="icon-camera" /> : <Icon type="icon-camera-disabled" className="color-danger" />} onClick={toggleVideo}>
+      <Menu.Item key="toggle-video" icon={!video ? <Icon type="icon-camera" /> : <Icon type="icon-camera-disabled" className="color-danger" />}>
         {video ? '关闭视频' : '开启视频'}
       </Menu.Item>
-      <Menu.Item icon={!pinned ? <PushpinOutlined /> : <PushpinOutlined />} onClick={togglePin}>
+      <Menu.Item key="toggle-pin" icon={!pinned ? <PushpinOutlined /> : <PushpinOutlined />}>
         {pinned ? '取消固定' : '固定视频'}
       </Menu.Item>
       {!local && (
         <>
-          <Menu.Item icon={<UserOutlined />}>
+          <Menu.Item key="set-host" icon={<UserOutlined />}>
             设为主持人
           </Menu.Item>
-          <Menu.Item icon={<UserOutlined />}>
+          <Menu.Item key="set-uion-host" icon={<UserOutlined />}>
             设为联席主持人
           </Menu.Item>
-          <Menu.Item icon={<UserDeleteOutlined />} className="color-danger">
+          <Menu.Item key="remove" icon={<UserDeleteOutlined />} className="color-danger">
             从会议中移除
           </Menu.Item>
         </>

@@ -22,12 +22,6 @@ export interface PeerInitParams {
   onChange?: () => void;
 }
 
-export interface RoomInitParams {
-  roomId: string;
-  constraints?: any;
-  onChange?: (peers: Peer[]) => void;
-}
-
 export interface Message {
   type: 'offer' | 'answer' | 'candidate' | 'message' | 'state';
   id: string;

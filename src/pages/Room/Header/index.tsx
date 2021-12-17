@@ -1,4 +1,4 @@
-import React, { useMemo, useContext } from 'react';
+import React from 'react';
 import { Dropdown, Divider, Button, message } from 'antd';
 import { useParams } from 'react-router-dom';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
@@ -6,15 +6,15 @@ import { DownOutlined, AppstoreOutlined } from '@ant-design/icons';
 import Timer from '@/components/Timer';
 import style from './style.less';
 
+const menuData = [
+  { name: 'gallery', title: '宫格视图' },
+  { name: 'thumbnail', title: '缩略图视图' },
+  { name: 'speaker', title: '演讲者视图' },
+];
+
 export default (props: any) => {
   const { layout, onLayoutChange } = props;
   const { id } = useParams<{id: string}>();
-
-  const menuData = useMemo(() => [
-    { name: 'gallery', title: '宫格视图' },
-    { name: 'thumbnail', title: '缩略图视图' },
-    { name: 'speaker', title: '演讲者视图' },
-  ], []);
 
   const menuInfo = (
     <div className={`${style.menu} ${style.info}`}>
