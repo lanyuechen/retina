@@ -1,24 +1,19 @@
+/* eslint-disable no-console */
 const { createServer } = require('http');
 const { Server } = require('socket.io');
-const nodeStatic = require('node-static');
 
 const PORT = 8080;
 
-const fileServer = new nodeStatic.Server();
-
-const httpServer = createServer((req, res) => {
-  fileServer.serve(req, res);
-});
+const httpServer = createServer();
 
 httpServer.listen(PORT);
 
-const io = new Server(httpServer);
-// const io = new Server(httpServer, {
-//   cors: {
-//     origin: '*',
-//     methods: ['GET', 'POST']
-//   }
-// });
+const io = new Server(httpServer, {
+  // cors: {
+  //   origin: '*',
+  //   methods: ['GET', 'POST']
+  // }
+});
 
 const peers = [];
 
@@ -36,7 +31,7 @@ io.sockets.on('connection', (socket) => {
   });
 
   socket.on('message', (message) => {
-    console.log('Receive message:', message);
+    console.log('Receive message:', message.type, message.id);
     socket.broadcast.emit('message', message);
   });
 
@@ -54,7 +49,7 @@ io.sockets.on('connection', (socket) => {
       peer: peer,
     });
 
-    console.log(`${peer.nickname} 加入房间“${room}”`);
+    console.log(`${peer.nickname}加入房间“${room}”`);
     socket.join(room);
 
     // 通知用户已加入房间
