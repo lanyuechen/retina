@@ -3,9 +3,9 @@ import routes from './routes';
 import proxy from './proxy';
 
 let publicPath = '/retina/';
-if (process.env.NODE_ENV === 'production') {
-  publicPath = 'https://cdn.jsdelivr.net/gh/lanyuechen/retina@gh-pages/';
-}
+// if (process.env.NODE_ENV === 'production') {
+//   publicPath = 'https://cdn.jsdelivr.net/gh/lanyuechen/retina@gh-pages/';
+// }
 
 export default defineConfig({
   title: 'RETINA',
