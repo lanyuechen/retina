@@ -59,7 +59,7 @@ export default class Room {
   }
 
   connect() {
-    this.socket = io();
+    this.socket = io('http://47.93.45.233:8080');
 
     this.socket.on('joined-room', this.handleJoinedRoom.bind(this));
     this.socket.on('peer-join-room', this.handlePeerJoinRoom.bind(this));
