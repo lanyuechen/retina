@@ -33,7 +33,7 @@ export default (props: PropType) => {
       
       {showTag && (
         <Tag className={style.tag}>
-          {!peer.audio ? <AudioOutlined /> : <AudioMutedOutlined className="color-danger" />}
+          {peer.audio ? <AudioOutlined /> : <AudioMutedOutlined className="color-danger" />}
           <span className={style.name}>
             {peer.nickname}
             {peer.isMe ? '(我)' : ''}

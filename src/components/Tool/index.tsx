@@ -10,11 +10,11 @@ import style from './style.less';
 interface PropType {
   className?: string;
   peer: any;
-  onAction: (key: string) => void;
+  onAction?: (key: string) => void;
 }
 
 export default (props: PropType) => {
-  const { peer, className, onAction } = props;
+  const { peer, className, onAction = () => {} } = props;
 
   return (
     <div className={`${style.tool} ${className ? className : ''}`}>

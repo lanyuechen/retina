@@ -26,25 +26,27 @@ export default () => {
 
   const room = useRoom();
 
-  room.on('change', (pcs: Peer[]) => {
-    setPeers([
-      {
-        ...room.me!,
-        isMe: true,
-        mediaStream: room.localStream,
-        video: room.video,
-      },
-      ...pcs.map(d => ({
-        ...d.peerInfo,
-        mediaStream: d.remoteStream,
-        pc: d,
-        video: d.video,
-      })),
-    ]);
-  });
-
   useEffect(() => {
     room.join({nickname: username});
+
+    room.on('change', (pcs: Peer[]) => {
+      setPeers([
+        {
+          ...room.me!,
+          isMe: true,
+          mediaStream: room.localStream,
+          video: room.video,
+          audio: room.audio,
+        },
+        ...pcs.map(d => ({
+          ...d.peerInfo,
+          mediaStream: d.remoteStream,
+          pc: d,
+          video: d.video,
+          audio: d.audio,
+        })),
+      ]);
+    });
   }, []);
 
   const handleLayoutChange = (type: string) => {
@@ -84,6 +86,7 @@ export default () => {
         )}
       </div>
       <Drawer
+        title="参会人"
         className={style.drawer}
         width={320}
         visible={drawerVisible}

@@ -130,6 +130,7 @@ export default class Peer {
     });
     this.sendMessage({
       type: 'state',
+      id: this.peerInfo.id,
       state: {
         [type]: !muting,
       }

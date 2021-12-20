@@ -14,7 +14,6 @@ export default (props: any) => {
   return (
     <div className={style.peerList}>
       <div className={style.search}>
-        <h2>参会人</h2>
         <Row gutter={8}>
           <Col flex="1 1 100px">
             <Input

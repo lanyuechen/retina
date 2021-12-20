@@ -32,11 +32,13 @@ export default class Room {
   toggleVideo() {
     this.peers.forEach(pc => pc.setMute('video', this.video));
     this.video = !this.video;
+    this.emit('change', this.peers);
   }
 
   toggleAudio() {
     this.peers.forEach(pc => pc.setMute('audio', this.audio));
     this.audio = !this.audio;
+    this.emit('change', this.peers);
   }
 
   async join(peerInfo: PeerBasicInfo, constraints?: any) {
