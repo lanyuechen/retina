@@ -18,7 +18,7 @@ import style from './style.less';
 import type { PeerState } from './typings';
 
 export default () => {
-  const { username } = useQuery();
+  const { u: username, v: video, a: audio } = useQuery();
 
   const [peers, setPeers] = useState<PeerState[]>([]);
   const [layout, setLayout] = useState<string>('gallery');
@@ -27,7 +27,7 @@ export default () => {
   const room = useRoom();
 
   useEffect(() => {
-    room.join({nickname: username});
+    room.join({nickname: username}, {video, audio});
 
     room.on('change', (pcs: Peer[]) => {
       setPeers([

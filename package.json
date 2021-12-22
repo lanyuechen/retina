@@ -10,10 +10,14 @@
   },
   "dependencies": {
     "@ant-design/icons": "^4.7.0",
+    "@emotion/react": "^11.7.1",
+    "@emotion/styled": "^11.6.0",
+    "@mui/material": "^5.2.5",
     "antd": "^4.17.3",
     "react": "^16.8.6",
     "react-copy-to-clipboard": "^5.0.4",
     "react-dom": "^16.8.6",
+    "react-hook-form": "^7.22.3",
     "socket.io-client": "^4.4.0"
   },
   "devDependencies": {

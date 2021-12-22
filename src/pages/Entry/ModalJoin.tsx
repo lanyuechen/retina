@@ -1,86 +1,93 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { history } from 'umi';
-import { Form, Input, Modal, Button } from 'antd';
-import Btn from '@/components/Btn';
+
+import {
+  Dialog, DialogTitle, DialogContent, DialogActions,
+  TextField, Button, IconButton,
+} from '@mui/material';
+
 import { AudioIcon, VideoIcon } from '@/components/SwitchButton';
 import VideoCard from '@/components/VideoCard';
-
-function randomString() {
-  return Math.random() * 1000000 >> 0;
-}
+import Form, { FormRef } from '@/components/Form';
 
 export default (props: any) => {
   const { visible, onCancel } = props;
-  const [form] = Form.useForm();
   const [me, setMe] = useState<any>();
   const [audio, setAudio] = useState(false);
   const [video, setVideo] = useState(true);
+  const form = useRef<FormRef>();
 
-  useEffect(() => {
-    navigator.mediaDevices.getUserMedia({
-      audio,
-      video,
-    }).then(mediaStream => {
-      setMe({
-        nickname: 'myself',
-        isMe: true,
-        mediaStream
-      });
-    });
-  }, []);
+  // useEffect(() => {
+  //   navigator.mediaDevices.getUserMedia({
+  //     audio,
+  //     video,
+  //   }).then(mediaStream => {
+  //     setMe({
+  //       nickname: 'myself',
+  //       isMe: true,
+  //       mediaStream
+  //     });
+  //   });
+  // }, []);
 
   const newMeeting = async () => {
-    const values = await form.validateFields();
-    history.push({
-      pathname: `/room/${values.roomId || randomString()}`,
-      query: {
-        username: values.username,
-        audio: audio ? 'on' : 'off',
-        video: video ? 'on' : 'off',
-      }
-    })
+    form.current?.submit((values: any) => {
+      history.push({
+        pathname: `/room/${values.roomId}`,
+        query: {
+          u: values.username,
+          a: audio ? 'on' : 'off',
+          v: video ? 'on' : 'off',
+        }
+      })
+    });
   }
 
-  const footer = (
-    <>
-      <Btn
-        style={{float: 'left'}}
-        icon={<AudioIcon active={audio} />}
-        onClick={() => setAudio(!audio)}
-      >
-        麦克风
-      </Btn>
-      <Btn
-        style={{float: 'left'}}
-        icon={<VideoIcon active={video} />}
-        onClick={() => setVideo(!video)}
-      >
-        摄像头
-      </Btn>
-      <Button onClick={onCancel}>取消</Button>
-      <Button type="primary" onClick={newMeeting}>新会议</Button>
-    </>
-  );
-
   return (
-    <Modal
-      title="新会议"
-      visible={visible}
-      onCancel={onCancel}
-      footer={footer}
-    >
-      <Form form={form}>
-        <Form.Item name="roomId" label="房间ID">
-          <Input placeholder="请输入房间ID" />
-        </Form.Item>
-        <Form.Item name="username" label="用户名" rules={[{required: true}]}>
-          <Input placeholder="请输入用户名" />
-        </Form.Item>
-      </Form>
-      
-      {me && (
-        <VideoCard peer={me} showTag={false} showTool={false} />
-      )}
-    </Modal>
-  )
+    <Dialog open={visible} onClose={onCancel}>
+      <DialogTitle>加入会议</DialogTitle>
+      <DialogContent>
+        <Form
+          ref={form}
+          defaultValues={{
+            roomId: '',
+            username: '',
+          }}
+          rules={{
+            roomId: {required: '房间ID不能为空'}
+          }}
+        >
+          <TextField
+            name="roomId"
+            label="房间ID"
+            variant="standard"
+            autoFocus
+            fullWidth
+          />
+          <TextField
+            name="username"
+            label="用户名"
+            margin="normal"
+            variant="standard"
+            fullWidth
+          />
+        </Form>
+        {me && (
+          <VideoCard peer={me} showTag={false} showTool={false} />
+        )}
+      </DialogContent>
+      <DialogActions>
+        <div style={{position: 'absolute', left: 8}}>
+          <IconButton onClick={() => setAudio(!audio)}>
+            <AudioIcon active={audio} />
+          </IconButton>
+          <IconButton onClick={() => setVideo(!video)}>
+            <VideoIcon active={video} />
+          </IconButton>
+        </div>
+        <Button onClick={onCancel}>取消</Button>
+        <Button onClick={newMeeting}>确定</Button>
+      </DialogActions>
+    </Dialog>
+  );
 }
