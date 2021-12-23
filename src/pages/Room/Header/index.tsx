@@ -1,9 +1,12 @@
 import React from 'react';
-import { Dropdown, Divider, Button, message } from 'antd';
-import { useParams } from 'react-router-dom';
+import { useParams } from 'umi';
+import { Grid, Box, Divider, Button, Typography, Card, CardContent, CardActions, Stack } from '@mui/material';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { DownOutlined, AppstoreOutlined } from '@ant-design/icons';
 import Timer from '@/components/Timer';
+import Popover from '@/components/Popover';
+import message from '@/components/message';
+
 import style from './style.less';
 
 const menuData = [
@@ -16,67 +19,87 @@ export default (props: any) => {
   const { layout, onLayoutChange } = props;
   const { id } = useParams<{id: string}>();
 
-  const menuInfo = (
-    <div className={`${style.menu} ${style.info}`}>
-      <h3>nickname</h3>
-      <ul>
-        <li>
-          <label>会议ID</label>
-          <span>{id}</span>
-        </li>
-        <li>
-          <label>会议链接</label>
-          <span>http://localhost:3000/conf</span>
-        </li>
-        <li>
-          <label>电话拨入</label>
-          <span>
+  var menuInfo = (
+    <Card sx={{ width: 320 }}>
+      <CardContent>
+        <Typography gutterBottom variant="h6">
+          nickname
+        </Typography>
+        <Grid container rowSpacing={1}>
+          <Grid item xs={3}>会议ID</Grid>
+          <Grid item xs={9}>{id}</Grid>
+        
+          <Grid item xs={3}>会议链接</Grid>
+          <Grid item xs={9}>http://localhost:3000/conf</Grid>
+        
+          <Grid item xs={3}>电话拨入</Grid>
+          <Grid item xs={9}>
             +86 10 8888 8888(中国大陆) <br />
-            <a href="javascript:;">更多电话号码</a>
-          </span>
-        </li>
-      </ul>
-      <CopyToClipboard
-        text={`会议ID: ${id}\n会议链接: http://localhost:3000/conf\n电话拨入: +86 10 8888 8888(中国大陆)`}
-        onCopy={() => message.success('复制成功')}
-      >
-        <Button style={{marginRight: 16}}>复制入会信息</Button>
-      </CopyToClipboard>
-      <Button>分享至会话</Button>
-    </div>
+            <a>更多电话号码</a>
+          </Grid>
+        </Grid>
+      </CardContent>
+      <CardActions>
+        <CopyToClipboard
+          text={`会议ID: ${id}\n会议链接: http://localhost:3000/conf\n电话拨入: +86 10 8888 8888(中国大陆)`}
+          onCopy={() => message.success('复制成功')}
+        >
+          <Button size="small">复制入会信息</Button>
+        </CopyToClipboard>
+        <Button size="small">分享至会话</Button>
+      </CardActions>
+    </Card>
   );
 
-  const menu = (
-    <ul className={style.menu}>
-      {menuData.map((d: any) => (
-        <li
-          key={d.name}
-          onClick={() => onLayoutChange(d.name)}
-          className={layout === d.name ? style.active : undefined}
-        >
-          <div className={style.icon} data-type={d.name} />
-          {d.title}
-        </li>
-      ))}
-    </ul>
+  var menu = (
+    <Card>
+      <CardContent>
+        <Stack direction="row" spacing={2}>
+          {menuData.map((d: any) => (
+            <div
+              key={d.name}
+              onClick={() => onLayoutChange(d.name)}
+              className={`${style.layoutCard} ${layout === d.name ? style.active : ''}`}
+            >
+              <div className={style.icon} data-type={d.name} />
+              {d.title}
+            </div>
+          ))}
+        </Stack>
+      </CardContent>
+    </Card>
   );
 
   return (
-    <div className={style.container}>
-      <Dropdown overlay={menuInfo} trigger={['click']}>
-        <span className={style.dropdown}>
-          ID: {id} <DownOutlined />
-        </span>
-      </Dropdown>
-      <Divider type="vertical" />
-      <Timer />
-
-      <Dropdown overlay={menu} trigger={['click']}>
-        <span className={style.dropdown} style={{float: 'right'}}>
-          <AppstoreOutlined />&nbsp;
-          {menuData.find(d => d.name === layout)?.title} <DownOutlined />
-        </span>
-      </Dropdown>
-    </div>
+    <Grid container className={style.container}>
+      <Grid item xs={8}>
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            width: 'fit-content',
+            '& hr': {
+              mx: 0.5,
+            },
+          }}
+        >
+          <Popover overlay={menuInfo}>
+            <span className={style.dropdown}>
+              ID: {id} <DownOutlined />
+            </span>
+          </Popover>
+          <Divider orientation="vertical" variant="middle" flexItem />
+          <Timer />
+        </Box>
+      </Grid>
+      <Grid item xs={4}>
+        <Popover overlay={menu}>
+          <span className={style.dropdown} style={{float: 'right'}}>
+            <AppstoreOutlined />&nbsp;
+            {menuData.find(d => d.name === layout)?.title} <DownOutlined />
+          </span>
+        </Popover>
+      </Grid>
+    </Grid>
   )
 }

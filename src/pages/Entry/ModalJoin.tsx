@@ -17,18 +17,18 @@ export default (props: any) => {
   const [video, setVideo] = useState(true);
   const form = useRef<FormRef>();
 
-  // useEffect(() => {
-  //   navigator.mediaDevices.getUserMedia({
-  //     audio,
-  //     video,
-  //   }).then(mediaStream => {
-  //     setMe({
-  //       nickname: 'myself',
-  //       isMe: true,
-  //       mediaStream
-  //     });
-  //   });
-  // }, []);
+  useEffect(() => {
+    navigator.mediaDevices.getUserMedia({
+      audio,
+      video,
+    }).then(mediaStream => {
+      setMe({
+        nickname: 'myself',
+        isMe: true,
+        mediaStream
+      });
+    });
+  }, []);
 
   const newMeeting = async () => {
     form.current?.submit((values: any) => {

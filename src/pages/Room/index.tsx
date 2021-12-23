@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-import { Drawer } from 'antd';
+import { Drawer } from '@mui/material';
 
 import Peer from '@/webrtc/Peer';
 
@@ -22,32 +22,32 @@ export default () => {
 
   const [peers, setPeers] = useState<PeerState[]>([]);
   const [layout, setLayout] = useState<string>('gallery');
-  const [drawerVisible, setDrawerVisible] = useState(true);
+  const [drawerVisible, setDrawerVisible] = useState(false);
 
   const room = useRoom();
 
-  useEffect(() => {
-    room.join({nickname: username}, {video, audio});
+  // useEffect(() => {
+  //   room.join({nickname: username}, {video, audio});
 
-    room.on('change', (pcs: Peer[]) => {
-      setPeers([
-        {
-          ...room.me!,
-          isMe: true,
-          mediaStream: room.localStream,
-          video: room.video,
-          audio: room.audio,
-        },
-        ...pcs.map(d => ({
-          ...d.peerInfo,
-          mediaStream: d.remoteStream,
-          pc: d,
-          video: d.video,
-          audio: d.audio,
-        })),
-      ]);
-    });
-  }, []);
+  //   room.on('change', (pcs: Peer[]) => {
+  //     setPeers([
+  //       {
+  //         ...room.me!,
+  //         isMe: true,
+  //         mediaStream: room.localStream,
+  //         video: room.video,
+  //         audio: room.audio,
+  //       },
+  //       ...pcs.map(d => ({
+  //         ...d.peerInfo,
+  //         mediaStream: d.remoteStream,
+  //         pc: d,
+  //         video: d.video,
+  //         audio: d.audio,
+  //       })),
+  //     ]);
+  //   });
+  // }, []);
 
   const handleLayoutChange = (type: string) => {
     setLayout(type);
@@ -73,7 +73,7 @@ export default () => {
         <div className={style.header}>
           <Header layout={layout} onLayoutChange={handleLayoutChange} />
         </div>
-        <div className={style.content}>
+        {/* <div className={style.content}>
           <Content layout={layout} peers={peers} />
         </div>
         {peers[0] && (
@@ -83,19 +83,22 @@ export default () => {
               onAction={handleAction}
             />
           </div>
-        )}
+        )} */}
       </div>
-      <Drawer
-        title="参会人"
-        className={style.drawer}
-        width={320}
-        visible={drawerVisible}
-        mask={false}
+      {/* <Drawer
+        variant="persistent"
+        open={drawerVisible}
+        anchor="right"
+        ModalProps={{
+          keepMounted: true,
+        }}
+        hideBackdrop
+        elevation={1}
         onClose={() => setDrawerVisible(false)}
       >
         <PeerList peers={peers} />
       </Drawer>
-      <Chat />
+      <Chat /> */}
     </div>
   );
 }
