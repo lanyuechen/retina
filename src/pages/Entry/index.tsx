@@ -25,7 +25,7 @@ export default () => {
       <div className={style.content}>
         <div className={style.iconContainer}>
           <BoxBtn
-            icon={<Icon type="icon-camera" />}
+            icon={<Icon type="camera" />}
             onClick={() => setJoinMeetingVisible(true)}
           >
             新会议

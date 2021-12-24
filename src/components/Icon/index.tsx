@@ -3,7 +3,7 @@ import React from 'react';
 import style from './style.less';
 
 export default (props: any) => {
-  const { type, className, rotate } = props;
+  const { type, className = '', rotate } = props;
 
   return (
     <span className={`${style.icon} ${className}`}>

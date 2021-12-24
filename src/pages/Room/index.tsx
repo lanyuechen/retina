@@ -55,7 +55,7 @@ export default () => {
 
   const handleAction = (key: string) => {
     if (key === 'show-peers') {
-      setDrawerVisible(true);
+      setDrawerVisible(!drawerVisible);
     } else if (key === 'toggle-video') {
       room.toggleVideo();
     } else if (key === 'toggle-audio') {
