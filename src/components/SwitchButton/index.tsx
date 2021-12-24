@@ -1,8 +1,4 @@
 import React from 'react';
-import {
-  AudioOutlined, AudioMutedOutlined,
-  PushpinOutlined,
-} from '@ant-design/icons';
 import Icon from '@/components/Icon';
 
 interface PropType {
@@ -10,13 +6,13 @@ interface PropType {
 }
 
 export const AudioIcon = ({ active }: PropType) => {
-  return active ? <AudioOutlined /> : <AudioMutedOutlined className="color-danger" />;
+  return active ? <Icon type="mic" /> : <Icon type="mic-off" />;
 }
 
 export const VideoIcon = ({ active }: PropType) => {
-  return active ? <Icon type="icon-camera" /> : <Icon type="icon-camera-disabled" className="color-danger" />;
+  return active ? <Icon type="camera" /> : <Icon type="camera-off" className="color-danger" />;
 }
 
 export const PinIcon = ({ active }: PropType) => {
-  return active ? <PushpinOutlined /> : <PushpinOutlined />;
+  return active ? <Icon type="pin" /> : <Icon type="pin" />;
 }

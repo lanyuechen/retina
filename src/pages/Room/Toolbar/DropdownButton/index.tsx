@@ -1,6 +1,5 @@
 import React from 'react';
 import { Button, MenuList, MenuItem, ListItemIcon, ListItemText } from '@mui/material';
-import { UpOutlined } from '@ant-design/icons';
 import Icon from '@/components/Icon';
 import Popover from '@/components/Popover';
 
@@ -44,7 +43,7 @@ export default (props: any) => {
       {dropdown && (
         <Popover overlay={menu}>
           <span className={style.extra}>
-            <UpOutlined />
+            <Icon type="up" />
           </span>
         </Popover>
       )}

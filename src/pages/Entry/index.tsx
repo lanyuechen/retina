@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { PlusSquareOutlined } from '@ant-design/icons';
 import Icon from '@/components/Icon';
 
 import ModalJoin from './ModalJoin';
@@ -32,7 +31,7 @@ export default () => {
             新会议
           </BoxBtn>
           <BoxBtn
-            icon={<PlusSquareOutlined />}
+            icon={<Icon type="plus-square" />}
             onClick={() => setJoinMeetingVisible(true)}
           >
             加入会议

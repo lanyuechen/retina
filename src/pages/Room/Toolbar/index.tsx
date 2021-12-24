@@ -1,10 +1,5 @@
 import React from 'react';
 import { Stack } from '@mui/material';
-import {
-  UserAddOutlined,
-  MoreOutlined,
-  PhoneOutlined,
-} from '@ant-design/icons';
 import { AudioIcon, VideoIcon } from '@/components/SwitchButton';
 import Icon from '@/components/Icon';
 import DropdownButton from './DropdownButton';
@@ -29,7 +24,7 @@ export default (props: PropType) => {
         <small style={{fontSize: '10px'}}>摄像头</small>
       </DropdownButton>
       <DropdownButton onClick={() => onAction('show-peers')} badge={peers.length}>
-        <UserAddOutlined />
+        <Icon type="user" />
         <small style={{fontSize: '10px'}}>参会人</small>
       </DropdownButton>
       <DropdownButton onClick={() => onAction('share')}>
@@ -41,12 +36,12 @@ export default (props: PropType) => {
         <small style={{fontSize: '10px'}}>开始录制</small>
       </DropdownButton>
       <DropdownButton dropdown>
-        <MoreOutlined rotate={90} />
+        <Icon type="more" rotate={90} />
         <small style={{fontSize: '10px'}}>更多</small>
       </DropdownButton>
 
       <DropdownButton onClick={() => onAction('leave')}>
-        <PhoneOutlined className="color-danger" rotate={225} />
+        <Icon type="phone" className="color-danger" />
         <small style={{fontSize: '10px'}}>离开</small>
       </DropdownButton>
     </Stack>

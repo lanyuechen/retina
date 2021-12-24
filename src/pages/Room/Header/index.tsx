@@ -2,7 +2,7 @@ import React from 'react';
 import { useParams } from 'umi';
 import { Grid, Box, Divider, Button, Typography, Card, CardContent, CardActions, Stack } from '@mui/material';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
-import { DownOutlined, AppstoreOutlined } from '@ant-design/icons';
+import Icon from '@/components/Icon';
 import Timer from '@/components/Timer';
 import Popover from '@/components/Popover';
 import message from '@/components/message';
@@ -85,7 +85,7 @@ export default (props: any) => {
         >
           <Popover overlay={menuInfo}>
             <span className={style.dropdown}>
-              ID: {id} <DownOutlined />
+              ID: {id} <Icon type="down" />
             </span>
           </Popover>
           <Divider orientation="vertical" variant="middle" flexItem />
@@ -95,8 +95,8 @@ export default (props: any) => {
       <Grid item xs={4}>
         <Popover overlay={menu}>
           <span className={style.dropdown} style={{float: 'right'}}>
-            <AppstoreOutlined />&nbsp;
-            {menuData.find(d => d.name === layout)?.title} <DownOutlined />
+            <Icon type="appstore" />&nbsp;
+            {menuData.find(d => d.name === layout)?.title} <Icon type="down" />
           </span>
         </Popover>
       </Grid>

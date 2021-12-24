@@ -1,10 +1,7 @@
 import React from 'react';
 import { MenuList, MenuItem, ListItemIcon, ListItemText } from '@mui/material';
-import {
-  UserOutlined,
-  UserDeleteOutlined,
-} from '@ant-design/icons';
 import { VideoIcon, PinIcon } from '@/components/SwitchButton';
+import Icon from '@/components/Icon';
 
 interface PropType {
   peer: any;
@@ -30,19 +27,19 @@ export default (props: PropType) => {
       </MenuItem>
       <MenuItem key="set-host">
         <ListItemIcon>
-          <UserOutlined />
+          <Icon type="user" />
         </ListItemIcon>
         <ListItemText>设为主持人</ListItemText>
       </MenuItem>
       <MenuItem key="set-uion-host">
         <ListItemIcon>
-          <UserOutlined />
+          <Icon type="user" />
         </ListItemIcon>
         <ListItemText>设为联席主持人</ListItemText>
       </MenuItem>
       <MenuItem key="remove">
         <ListItemIcon>
-          <UserDeleteOutlined className="color-danger" />
+          <Icon type="user-delete" className="color-danger" />
         </ListItemIcon>
         <ListItemText>从会议中移除</ListItemText>
       </MenuItem>

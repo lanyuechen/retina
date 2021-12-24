@@ -1,13 +1,20 @@
 import React from 'react';
 
-import { createFromIconfontCN } from '@ant-design/icons';
-
-const Icon = createFromIconfontCN({
-  scriptUrl: '//at.alicdn.com/t/font_2320911_div6s31if17.js',
-});
+import style from './style.less';
 
 export default (props: any) => {
+  const { type, className, rotate } = props;
+
   return (
-    <Icon {...props} />
+    <span className={`${style.icon} ${className}`}>
+      <svg
+        aria-hidden="true"
+        style={{
+          transform: `rotate(${rotate}deg)`
+        }}
+      >
+        <use xlinkHref={`#icon-${type}`} />
+      </svg>
+    </span>
   );
 }

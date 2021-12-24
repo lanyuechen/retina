@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Avatar } from '@mui/material';
-import { RightOutlined, LikeOutlined } from '@ant-design/icons';
+import Icon from '@/components/Icon';
+
 import style from './style.less';
 
 export default () => {
@@ -37,10 +38,10 @@ export default () => {
       <div className={style.input}>
         <input type="text" placeholder="说些什么" onKeyUp={handleKeyPress} />
         <span className={style.prefix}>
-          <RightOutlined />
+          <Icon type="right" />
         </span>
         <span className={style.suffix}>
-          <LikeOutlined />
+          <Icon type="like" />
         </span>
       </div>
     </div>

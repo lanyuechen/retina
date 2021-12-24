@@ -1,8 +1,8 @@
 import React from 'react';
 import { IconButton, Tooltip } from '@mui/material';
-import { MoreOutlined } from '@ant-design/icons';
 import { AudioIcon } from '@/components/SwitchButton';
 import Popover from '@/components/Popover';
+import Icon from '@/components/Icon';
 
 import ExtraMenu from './ExtraMenu';
 
@@ -29,7 +29,7 @@ export default (props: PropType) => {
         overlay={<ExtraMenu peer={peer} onClick={({ key }: any) => onAction(key)} />}
       >
         <IconButton size="small">
-          <MoreOutlined rotate={90} />
+          <Icon type="more" rotate={90} />
         </IconButton>
       </Popover>
     </div>
