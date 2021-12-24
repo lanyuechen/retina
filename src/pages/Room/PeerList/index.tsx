@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Empty } from 'antd';
 import { Tabs, Tab, List } from '@mui/material';
+import Empty from '@/components/Empty';
 
 import PeerItem from './PeerItem';
 

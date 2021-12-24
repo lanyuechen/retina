@@ -1,6 +1,6 @@
 import React from 'react';
 import GalleryLayout from './GalleryLayout';
-import ThumbnailLayout from './ThumbnailLayout';
+// import ThumbnailLayout from './ThumbnailLayout';
 import SpeakerLayout from './SpeakerLayout';
 
 export default (props: any) => {
@@ -10,9 +10,9 @@ export default (props: any) => {
     return <SpeakerLayout {...others} />;
   }
 
-  if (layout === 'thumbnail') {
-    return <ThumbnailLayout {...others} />;
-  }
+  // if (layout === 'thumbnail') {
+  //   return <ThumbnailLayout {...others} />;
+  // }
 
   return <GalleryLayout {...others} />;
 }

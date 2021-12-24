@@ -1,9 +1,9 @@
 import React from 'react';
-import { Avatar, Tag } from 'antd';
+import { Box, Avatar, Chip } from '@mui/material';
 import AspectCard from '@/components/AspectCard';
-import { AudioOutlined, AudioMutedOutlined } from '@ant-design/icons';
 import Video from '@/components/Video';
 import Tool from '@/components/Tool';
+import { AudioIcon } from '@/components/SwitchButton';
 
 import style from './style.less';
 
@@ -22,23 +22,21 @@ export default (props: PropType) => {
     <AspectCard className={style.container} active={true} cover={cover}>
       <Video src={peer.mediaStream} />
 
-      {/* {!peer.video && (
-        <Avatar
-          size={80}
-          style={{ backgroundColor: '#1890ff', cursor: 'pointer' }}
-        >
-          {peer.nickname}
-        </Avatar>
-      )} */}
-      
-      {showTag && (
-        <Tag className={style.tag}>
-          {peer.audio ? <AudioOutlined /> : <AudioMutedOutlined className="color-danger" />}
-          <span className={style.name}>
+      {!peer.video && (
+        <div className={style.icon}>
+          <Avatar>
             {peer.nickname}
-            {peer.isMe ? '(我)' : ''}
-          </span>
-        </Tag>
+          </Avatar>
+        </div>
+      )}
+
+      {showTag && (
+        <Chip
+          size="small"
+          className={style.tag}
+          icon={<AudioIcon active={peer.audio} />}
+          label={`${peer.nickname}${peer.isMe ? '(我)' : ''}`}
+        />
       )}
 
       {showTool && <Tool className={style.tool} peer={peer} />}

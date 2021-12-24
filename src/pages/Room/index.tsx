@@ -20,7 +20,10 @@ import type { PeerState } from './typings';
 export default () => {
   const { u: username, v: video, a: audio } = useQuery();
 
-  const [peers, setPeers] = useState<PeerState[]>([]);
+  const [peers, setPeers] = useState<PeerState[]>([
+    { nickname: 'test' },
+    { nickname: '222' },
+  ]);
   const [layout, setLayout] = useState<string>('gallery');
   const [drawerVisible, setDrawerVisible] = useState(false);
 
@@ -73,7 +76,7 @@ export default () => {
         <div className={style.header}>
           <Header layout={layout} onLayoutChange={handleLayoutChange} />
         </div>
-        {/* <div className={style.content}>
+        <div className={style.content}>
           <Content layout={layout} peers={peers} />
         </div>
         {peers[0] && (
@@ -83,7 +86,7 @@ export default () => {
               onAction={handleAction}
             />
           </div>
-        )} */}
+        )}
       </div>
       {/* <Drawer
         variant="persistent"

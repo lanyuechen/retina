@@ -17,7 +17,6 @@ export default defineConfig({
   proxy,
   hash: true,
   publicPath,  // jsdelivr cdn 加速
-  antd: {},
   define: {
     PUBLIC_PATH: publicPath,
   },

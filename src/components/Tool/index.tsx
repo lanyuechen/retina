@@ -1,7 +1,8 @@
 import React from 'react';
-import { Button, Dropdown, Tooltip } from 'antd';
+import { IconButton, Tooltip } from '@mui/material';
 import { MoreOutlined } from '@ant-design/icons';
-import { AudioOutlined, AudioMutedOutlined } from '@ant-design/icons';
+import { AudioIcon } from '@/components/SwitchButton';
+import Popover from '@/components/Popover';
 
 import ExtraMenu from './ExtraMenu';
 
@@ -19,19 +20,18 @@ export default (props: PropType) => {
   return (
     <div className={`${style.tool} ${className ? className : ''}`}>
       <Tooltip title="静音">
-        <Button
-          onClick={() => onAction('toggle-audio')}
-          shape="circle"
-          icon={peer.audio ? <AudioOutlined /> : <AudioMutedOutlined className="color-danger" />}
-        />
+        <IconButton size="small" onClick={() => onAction('toggle-audio')}>
+          <AudioIcon active={peer.audio} />
+        </IconButton>
       </Tooltip>
     
-      <Dropdown
+      <Popover
         overlay={<ExtraMenu peer={peer} onClick={({ key }: any) => onAction(key)} />}
-        trigger={['click']}
       >
-        <Button shape="circle" icon={<MoreOutlined rotate={90} />} />
-      </Dropdown>
+        <IconButton size="small">
+          <MoreOutlined rotate={90} />
+        </IconButton>
+      </Popover>
     </div>
   );
 };

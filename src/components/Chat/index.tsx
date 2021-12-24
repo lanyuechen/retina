@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Avatar } from 'antd';
+import { Avatar } from '@mui/material';
 import { RightOutlined, LikeOutlined } from '@ant-design/icons';
 import style from './style.less';
 
@@ -27,7 +27,7 @@ export default () => {
       <ul className={style.message}>
         {list.map(d => (
           <li key={d.id}>
-            <Avatar size={20}>
+            <Avatar>
               {d.user.peerName && d.user.peerName[0].toUpperCase()}
             </Avatar>
             {d.content}
