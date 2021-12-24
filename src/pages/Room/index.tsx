@@ -20,37 +20,34 @@ import type { PeerState } from './typings';
 export default () => {
   const { u: username, v: video, a: audio } = useQuery();
 
-  const [peers, setPeers] = useState<PeerState[]>([
-    { nickname: 'test' },
-    { nickname: '222' },
-  ]);
+  const [peers, setPeers] = useState<PeerState[]>([]);
   const [layout, setLayout] = useState<string>('gallery');
   const [drawerVisible, setDrawerVisible] = useState(false);
 
   const room = useRoom();
 
-  // useEffect(() => {
-  //   room.join({nickname: username}, {video, audio});
+  useEffect(() => {
+    room.join({nickname: username}, {video, audio});
 
-  //   room.on('change', (pcs: Peer[]) => {
-  //     setPeers([
-  //       {
-  //         ...room.me!,
-  //         isMe: true,
-  //         mediaStream: room.localStream,
-  //         video: room.video,
-  //         audio: room.audio,
-  //       },
-  //       ...pcs.map(d => ({
-  //         ...d.peerInfo,
-  //         mediaStream: d.remoteStream,
-  //         pc: d,
-  //         video: d.video,
-  //         audio: d.audio,
-  //       })),
-  //     ]);
-  //   });
-  // }, []);
+    room.on('change', (pcs: Peer[]) => {
+      setPeers([
+        {
+          ...room.me!,
+          isMe: true,
+          mediaStream: room.localStream,
+          video: room.video,
+          audio: room.audio,
+        },
+        ...pcs.map(d => ({
+          ...d.peerInfo,
+          mediaStream: d.remoteStream,
+          pc: d,
+          video: d.video,
+          audio: d.audio,
+        })),
+      ]);
+    });
+  }, []);
 
   const handleLayoutChange = (type: string) => {
     setLayout(type);
@@ -88,7 +85,7 @@ export default () => {
           </div>
         )}
       </div>
-      {/* <Drawer
+      <Drawer
         variant="persistent"
         open={drawerVisible}
         anchor="right"
@@ -101,7 +98,7 @@ export default () => {
       >
         <PeerList peers={peers} />
       </Drawer>
-      <Chat /> */}
+      <Chat />
     </div>
   );
 }

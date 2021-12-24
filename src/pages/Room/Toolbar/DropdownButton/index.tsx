@@ -1,30 +1,16 @@
 import React from 'react';
-import { Button, Menu, MenuItem, ListItemIcon, ListItemText } from '@mui/material';
-import { AudioIcon, VideoIcon } from '@/components/SwitchButton';
-import Icon from '@/components/Icon';
+import { Button, MenuList, MenuItem, ListItemIcon, ListItemText } from '@mui/material';
 import { UpOutlined } from '@ant-design/icons';
+import Icon from '@/components/Icon';
+import Popover from '@/components/Popover';
 
 import style from './style.less';
 
 export default (props: any) => {
   const { dropdown, badge, children, onClick } = props;
 
-  const [anchorEl, setAnchorEl] = React.useState(null);
-  const open = Boolean(anchorEl);
-
-  const handleClick = (event: any) => {
-    setAnchorEl(event.currentTarget);
-  };
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
-
   const menu = (
-    <Menu
-      open={open}
-      onClose={handleClose}
-      anchorEl={anchorEl}
-    >
+    <MenuList>
       <MenuItem>
         <ListItemIcon>
           <Icon type="icon-cc" />
@@ -49,23 +35,26 @@ export default (props: any) => {
         </ListItemIcon>
         <ListItemText>设置</ListItemText>
       </MenuItem>
-    </Menu>
+    </MenuList>
   );
 
   return (
     <Button variant="text" onClick={onClick} style={{flexDirection: 'column'}}>
       {children}
       {dropdown && (
-        <span className={style.extra} onClick={handleClick}>
-          <UpOutlined />
-        </span>
+        <Popover overlay={menu}>
+          <span className={style.extra}>
+            <UpOutlined />
+          </span>
+        </Popover>
       )}
       {!!badge && (
-        <span className={style.extra}>
-          {badge}
-        </span>
+        <Popover overlay={menu}>
+          <span className={style.extra}>
+            {badge}
+          </span>
+        </Popover>
       )}
-      {menu}
     </Button>
   );
 }
