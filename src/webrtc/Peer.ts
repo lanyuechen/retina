@@ -1,6 +1,8 @@
 import { trace } from './utils/log';
 import { noop } from './utils/utils';
 
+import MStream from '@/webrtc/MediaStream';
+
 import type { Socket } from 'socket.io-client';
 import type { PeerInfo, PeerInitParams, Message } from './typings';
 
@@ -9,7 +11,7 @@ export default class Peer {
   socket: Socket;
   peerConnection: RTCPeerConnection;
   dataChannel: RTCDataChannel;
-  remoteStream: MediaStream | undefined;
+  remoteStream: MStream;
   onChange: () => void;
 
   video: boolean = false;
@@ -34,15 +36,21 @@ export default class Peer {
 
     this.socket.on('message', this.handleMessage.bind(this));
 
-    localStream.getTracks().map(track => {
-      if (track.kind === 'video') {
-        this.video = true;
-      }
-      if (track.kind === 'audio') {
-        this.audio = true;
-      }
-      this.peerConnection.addTrack(track);
-    });
+    this.remoteStream = new MStream();
+
+    if (localStream.videoStream) {
+      this.video = true;
+      localStream.videoStream.getTracks().forEach(track => {
+        this.peerConnection.addTrack(track);
+      });
+    }
+
+    if (localStream.audioStream) {
+      this.audio = true;
+      localStream.audioStream.getTracks().forEach(track => {
+        this.peerConnection.addTrack(track);
+      });
+    }
   }
 
   // 当调用PeerConnection.setLocalDescription()后触发，并发消息给其他用户
@@ -69,11 +77,10 @@ export default class Peer {
   handleRemoteTrack(event: RTCTrackEvent) {
     trace('remote track', event);
     if (event.streams && event.streams[0]) {
-      this.remoteStream = event.streams[0];
+      event.streams[0].getTracks().forEach(track => {
+        this.remoteStream.addTrack(track);
+      })
     } else {
-      if (!this.remoteStream) {
-        this.remoteStream = new MediaStream();
-      }
       this.remoteStream.addTrack(event.track);
     }
     this.onChange();

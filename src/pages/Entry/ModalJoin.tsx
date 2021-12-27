@@ -1,10 +1,11 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useMemo } from 'react';
 import { history } from 'umi';
 
 import {
   Dialog, DialogTitle, DialogContent, DialogActions,
   TextField, Button, IconButton,
 } from '@mui/material';
+import MStream from '@/webrtc/MediaStream';
 
 import { AudioIcon, VideoIcon } from '@/components/SwitchButton';
 import VideoCard from '@/components/VideoCard';
@@ -12,34 +13,58 @@ import Form, { FormRef } from '@/components/Form';
 
 export default (props: any) => {
   const { visible, onCancel } = props;
-  const [me, setMe] = useState<any>();
-  const [audio, setAudio] = useState(false);
-  const [video, setVideo] = useState(true);
+  const [me, setMe] = useState<any>({
+    nickname: '我',
+    isMe: true,
+    videoStream: null,
+    audioStream: null,
+  });
   const form = useRef<FormRef>();
 
+  const stream = useMemo(() => new MStream(), []);
+
   useEffect(() => {
-    navigator.mediaDevices.getUserMedia({
-      audio,
-      video,
-    }).then(mediaStream => {
+    stream.init({
+      audio: false,
+      video: true,
+    }).then(() => {
       setMe({
-        nickname: 'myself',
-        isMe: true,
-        mediaStream
+        ...me,
+        videoStream: stream.videoStream,
       });
     });
+
+    return () => {
+      stream.destroy();
+    }
   }, []);
 
-  const newMeeting = async () => {
+  const joinMeeting = async () => {
     form.current?.submit((values: any) => {
       history.push({
         pathname: `/room/${values.roomId}`,
         query: {
           u: values.username,
-          a: audio ? 'on' : 'off',
-          v: video ? 'on' : 'off',
+          a: me.audioStream ? 'on' : 'off',
+          v: me.videoStream ? 'on' : 'off',
         }
       })
+    });
+  }
+
+  const handleAudio = async () => {
+    const audioStream = await stream.toggleAudioStream();
+    setMe({
+      ...me,
+      audioStream,
+    });
+  }
+
+  const handleVideo = async () => {
+    const videoStream = await stream.toggleVideoStream();
+    setMe({
+      ...me,
+      videoStream: videoStream,
     });
   }
 
@@ -78,15 +103,15 @@ export default (props: any) => {
       </DialogContent>
       <DialogActions>
         <div style={{position: 'absolute', left: 8}}>
-          <IconButton onClick={() => setAudio(!audio)}>
-            <AudioIcon active={audio} />
+          <IconButton onClick={handleAudio}>
+            <AudioIcon active={Boolean(me.audioStream)} />
           </IconButton>
-          <IconButton onClick={() => setVideo(!video)}>
-            <VideoIcon active={video} />
+          <IconButton onClick={handleVideo}>
+            <VideoIcon active={Boolean(me.videoStream)} />
           </IconButton>
         </div>
         <Button onClick={onCancel}>取消</Button>
-        <Button onClick={newMeeting}>确定</Button>
+        <Button onClick={joinMeeting}>确定</Button>
       </DialogActions>
     </Dialog>
   );

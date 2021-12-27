@@ -21,9 +21,9 @@ export default (props: PropType) => {
   return (
     <AspectCard>
       <div className={style.videoCard}>
-        <Video className={style.video} src={peer.mediaStream} />
+        <Video className={style.video} src={peer.videoStream} />
 
-        {!peer.video && (
+        {!peer.videoStream && (
           <div className={style.icon}>
             <Avatar>
               {peer.nickname?.[0]}
@@ -35,7 +35,7 @@ export default (props: PropType) => {
           <Chip
             size="small"
             className={style.tag}
-            icon={<AudioIcon active={peer.audio} />}
+            icon={<AudioIcon active={Boolean(peer.audioStream)} />}
             label={`${peer.nickname}${peer.isMe ? '(我)' : ''}`}
           />
         )}

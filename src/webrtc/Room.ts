@@ -1,5 +1,6 @@
 import io, { Socket } from 'socket.io-client';
 import Peer from './Peer';
+import MStream from '@/webrtc/MediaStream';
 import { trace } from "./utils/log";
 import { getPcId } from './utils/utils';
 
@@ -11,7 +12,7 @@ export default class Room {
   roomId: string;
   peers: Peer[];
   me: PeerInfo | null = null;
-  localStream: MediaStream | undefined;
+  localStream: MStream;
   socket: Socket | undefined;
   mediaStreamConstraints: any;
   video: boolean = false;
@@ -27,6 +28,7 @@ export default class Room {
   constructor(roomId: string) {
     this.roomId = roomId;
     this.peers = [];
+    this.localStream = new MStream();
   }
 
   toggleVideo() {
@@ -53,8 +55,7 @@ export default class Room {
     // 连接socket
     this.connect();
 
-    const mediaStream = await navigator.mediaDevices.getUserMedia(this.mediaStreamConstraints);
-    this.localStream = mediaStream;
+    await this.localStream.init(this.mediaStreamConstraints);
 
     // 加入房间
     this.socket?.emit('joinRoom', this.roomId, peerInfo);

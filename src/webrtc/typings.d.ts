@@ -1,6 +1,7 @@
 import type { Socket } from 'socket.io-client';
 import type Room from './Room';
 import type Peer from './Peer';
+import type MStream from './MediaStream';
 
 export type {
   Room, Peer
@@ -17,7 +18,7 @@ export interface PeerInfo extends PeerBasicInfo {
 
 export interface PeerInitParams {
   socket: Socket;
-  localStream: MediaStream;
+  localStream: MStream;
   peerInfo: PeerInfo;
   onChange?: () => void;
 }
