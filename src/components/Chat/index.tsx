@@ -5,7 +5,7 @@ import Icon from '@/components/Icon';
 import style from './style.less';
 
 export default () => {
-  const [ list, setList ] = useState([]);
+  const [ list, setList ] = useState<any>([]);
 
   const handleKeyPress = (e: any) => {
     if (e.keyCode === 13) {
@@ -26,7 +26,7 @@ export default () => {
   return (
     <div className={style.chat}>
       <ul className={style.message}>
-        {list.map(d => (
+        {list.map((d: any) => (
           <li key={d.id}>
             <Avatar>
               {d.user.peerName && d.user.peerName[0].toUpperCase()}
