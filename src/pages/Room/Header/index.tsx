@@ -10,9 +10,9 @@ import message from '@/components/message';
 import style from './style.less';
 
 const menuData = [
-  { name: 'gallery', title: '宫格视图' },
-  { name: 'thumbnail', title: '缩略图视图' },
-  { name: 'speaker', title: '演讲者视图' },
+  { name: 'gallery', title: '宫格视图', icon: 'layout-grid' },
+  // { name: 'thumbnail', title: '缩略图视图' },
+  { name: 'speaker', title: '演讲者视图', icon: 'layout-speaker' },
 ];
 
 export default (props: any) => {
@@ -61,7 +61,9 @@ export default (props: any) => {
               onClick={() => onLayoutChange(d.name)}
               className={`${style.layoutCard} ${layout === d.name ? style.active : ''}`}
             >
-              <div className={style.icon} data-type={d.name} />
+              <div className={style.icon} data-type={d.name}>
+                <Icon type={d.icon} />
+              </div> 
               {d.title}
             </div>
           ))}

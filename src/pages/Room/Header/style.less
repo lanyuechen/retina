@@ -6,38 +6,23 @@
   text-align: center;
   cursor: pointer;
   .icon {
-    width: 150px;
     height: 100px;
-    background: #aaa;
-    border: 2px solid transparent;
-    border-radius: 4px;
-    transition: border-color .4s;
-    &[data-type=gallery] {
-      background: url(./img/gallery.png) 0 0 no-repeat;
-      background-size: 146px 96px;
-      &:hover {
-        background-position: 0 1px;
-        background-image: url(./img/gallery-active.png);
-      }
+    transition: color .4s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 140px;
+    color: #dfdfdf;
+    &>span {
+      position: relative;
+      top: 3px;
     }
-    &[data-type=thumbnail] {
-      background: url(./img/thumbnail.png) 0 0 no-repeat;
-      background-size: 146px 96px;
-      &:hover {
-        background-position: 0 1px;
-        background-image: url(./img/thumbnail-active.png);
-      }
-    }
-    &[data-type=speaker] {
-      background: url(./img/speaker.png) 0 0 no-repeat;
-      background-size: 146px 96px;
-      &:hover {
-        background-image: url(./img/speaker-active.png);
-      }
+    &:hover {
+      color: #e1eafe;
     }
   }
   &.active .icon {
-    border-color: #1890ff;
+    color: #1890ff;
   }
 }
 
