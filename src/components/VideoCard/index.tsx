@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Avatar, Chip } from '@mui/material';
+import { Avatar, Chip } from '@mui/material';
 import AspectCard from '@/components/AspectCard';
 import Video from '@/components/Video';
 import Tool from '@/components/Tool';
@@ -16,31 +16,32 @@ interface PropType {
 }
 
 export default (props: PropType) => {
-  const { peer, showTag = true, showTool = true, cover } = props;
+  const { peer, showTag = true, showTool = true } = props;
 
   return (
-    <AspectCard className={style.container} active={true} cover={cover}>
-      <Video src={peer.mediaStream} />
+    <AspectCard>
+      <div className={style.videoCard}>
+        <Video className={style.video} src={peer.mediaStream} />
 
-      {!peer.video && (
-        <div className={style.icon}>
-          <Avatar>
-            {peer.nickname}
-          </Avatar>
-        </div>
-      )}
+        {!peer.video && (
+          <div className={style.icon}>
+            <Avatar>
+              {peer.nickname?.[0]}
+            </Avatar>
+          </div>
+        )}
 
-      {showTag && (
-        <Chip
-          size="small"
-          className={style.tag}
-          icon={<AudioIcon active={peer.audio} />}
-          label={`${peer.nickname}${peer.isMe ? '(我)' : ''}`}
-        />
-      )}
+        {showTag && (
+          <Chip
+            size="small"
+            className={style.tag}
+            icon={<AudioIcon active={peer.audio} />}
+            label={`${peer.nickname}${peer.isMe ? '(我)' : ''}`}
+          />
+        )}
 
-      {showTool && <Tool className={style.tool} peer={peer} />}
-
+        {showTool && <Tool className={style.tool} peer={peer} />}
+      </div>
     </AspectCard>
   );
 };

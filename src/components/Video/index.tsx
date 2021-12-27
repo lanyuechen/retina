@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 
 export default (props: any) => {
-  const { src } = props;
+  const { src, ...others } = props;
   const ref = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
@@ -11,6 +11,6 @@ export default (props: any) => {
   }, [src]);
 
   return (
-    <video ref={ref} autoPlay playsInline />
+    <video ref={ref} autoPlay playsInline {...others} />
   );
 }
