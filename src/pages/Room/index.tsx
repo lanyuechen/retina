@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 
-import { Drawer } from '@mui/material';
+import { Drawer, Divider, IconButton, Typography, Stack } from '@mui/material';
 
 import Peer from '@/webrtc/Peer';
 
 import Chat from '@/components/Chat';
+import Icon from '@/components/Icon';
 import useQuery from '@/utils/use-query';
 import useRoom from '@/utils/use-room';
 
@@ -50,6 +51,10 @@ export default () => {
         })),
       ]);
     });
+
+    return () => {
+      room.destroy();
+    }
   }, []);
 
   const handleLayoutChange = (type: string) => {
@@ -100,6 +105,15 @@ export default () => {
         elevation={1}
         onClose={() => setDrawerVisible(false)}
       >
+        <Stack direction="row" alignItems="center">
+          <IconButton onClick={() => setDrawerVisible(false)}>
+            <Icon type="left" />
+          </IconButton>
+          <Typography variant="h6">
+            参会人
+          </Typography>
+        </Stack>
+        <Divider />
         <PeerList peers={peers} />
       </Drawer>
       <Chat />

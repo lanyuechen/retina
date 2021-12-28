@@ -123,4 +123,10 @@ export default class Room {
     }
     return devices.filter(d => d.deviceId && d.kind === type);
   }
+
+  destroy() {
+    this.localStream.destroy();
+    this.hangup();
+    window[ROOM] = null;
+  }
 }
