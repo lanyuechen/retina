@@ -106,13 +106,13 @@ export default class Room {
   }
 
   on(key: string, fn: (...args: any) => void) {
-    addEventListener(key, (e: any) => {
+    addEventListener(`custom_${key}`, (e: any) => {
       fn(...e.detail);
     });
   }
 
   emit(key: string, ...args: any) {
-    const event = new CustomEvent(key, { detail: args });
+    const event = new CustomEvent(`custom_${key}`, { detail: args });
     dispatchEvent(event);
   }
 

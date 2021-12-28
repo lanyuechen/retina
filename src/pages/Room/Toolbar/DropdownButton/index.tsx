@@ -9,8 +9,15 @@ export default (props: any) => {
   const { dropdown, badge, children, onClick } = props;
 
   return (
-    <Button variant="text" onClick={onClick} style={{flexDirection: 'column'}}>
-      {children}
+    <span className={style.dropdown}>
+      <Button variant="text" onClick={onClick} style={{flexDirection: 'column'}}>
+        {children}
+      </Button>
+      {!!badge && (
+        <span className={style.extra}>
+          {badge}
+        </span>
+      )}
       {dropdown && (
         <Popover overlay={dropdown}>
           <span className={style.extra}>
@@ -18,11 +25,6 @@ export default (props: any) => {
           </span>
         </Popover>
       )}
-      {!!badge && (
-        <span className={style.extra}>
-          {badge}
-        </span>
-      )}
-    </Button>
+    </span>
   );
 }
