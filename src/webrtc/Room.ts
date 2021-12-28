@@ -1,6 +1,6 @@
 import io, { Socket } from 'socket.io-client';
 import Peer from './Peer';
-import MStream from '@/webrtc/MediaStream';
+import StreamManager from '@/webrtc/StreamManager';
 import { trace } from "./utils/log";
 import { getPcId } from './utils/utils';
 
@@ -12,11 +12,8 @@ export default class Room {
   roomId: string;
   peers: Peer[];
   me: PeerInfo | null = null;
-  localStream: MStream;
+  localStream: StreamManager;
   socket: Socket | undefined;
-  mediaStreamConstraints: any;
-  video: boolean = false;
-  audio: boolean = false;
 
   static getInstance(roomId: string) {
     if (!window[ROOM]) {
@@ -28,34 +25,26 @@ export default class Room {
   constructor(roomId: string) {
     this.roomId = roomId;
     this.peers = [];
-    this.localStream = new MStream();
+    this.localStream = new StreamManager();
   }
 
-  toggleVideo() {
-    this.peers.forEach(pc => pc.setMute('video', this.video));
-    this.video = !this.video;
+  async toggleVideo() {
+    await this.localStream.toggleRemoteVideoStream(this.peers.map(peer => peer.peerConnection));
+    this.peers.forEach(peer => peer.createOffer());
     this.emit('change', this.peers);
   }
 
-  toggleAudio() {
-    this.peers.forEach(pc => pc.setMute('audio', this.audio));
-    this.audio = !this.audio;
+  async toggleAudio() {
+    await this.localStream.toggleRemoteAudioStream(this.peers.map(peer => peer.peerConnection));
+    this.peers.forEach(peer => peer.createOffer());
     this.emit('change', this.peers);
   }
 
   async join(peerInfo: PeerBasicInfo, constraints?: any) {
-    this.mediaStreamConstraints = constraints || {
-      video: true,
-      audio: true,
-    };
-
-    this.video = !!this.mediaStreamConstraints.video;
-    this.audio = !!this.mediaStreamConstraints.audio;
-
     // 连接socket
     this.connect();
 
-    await this.localStream.init(this.mediaStreamConstraints);
+    await this.localStream.init(constraints);
 
     // 加入房间
     this.socket?.emit('joinRoom', this.roomId, peerInfo);

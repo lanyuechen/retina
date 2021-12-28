@@ -1,7 +1,7 @@
 import { trace } from './utils/log';
 import { noop } from './utils/utils';
 
-import MStream from '@/webrtc/MediaStream';
+import StreamManager from '@/webrtc/StreamManager';
 
 import type { Socket } from 'socket.io-client';
 import type { PeerInfo, PeerInitParams, Message } from './typings';
@@ -11,11 +11,8 @@ export default class Peer {
   socket: Socket;
   peerConnection: RTCPeerConnection;
   dataChannel: RTCDataChannel;
-  remoteStream: MStream;
+  remoteStream: StreamManager;
   onChange: () => void;
-
-  video: boolean = false;
-  audio: boolean = false;
 
   constructor({ socket, localStream, peerInfo, onChange }: PeerInitParams) {
     this.socket = socket;
@@ -36,21 +33,9 @@ export default class Peer {
 
     this.socket.on('message', this.handleMessage.bind(this));
 
-    this.remoteStream = new MStream();
+    this.remoteStream = new StreamManager();
 
-    if (localStream.videoStream) {
-      this.video = true;
-      localStream.videoStream.getTracks().forEach(track => {
-        this.peerConnection.addTrack(track);
-      });
-    }
-
-    if (localStream.audioStream) {
-      this.audio = true;
-      localStream.audioStream.getTracks().forEach(track => {
-        this.peerConnection.addTrack(track);
-      });
-    }
+    localStream.addRemoteTrack(this.peerConnection);
   }
 
   // 当调用PeerConnection.setLocalDescription()后触发，并发消息给其他用户
@@ -76,10 +61,12 @@ export default class Peer {
 
   handleRemoteTrack(event: RTCTrackEvent) {
     trace('remote track', event);
+    this.remoteStream.endVideoStream();
+    this.remoteStream.endAudioStream();
     if (event.streams && event.streams[0]) {
       event.streams[0].getTracks().forEach(track => {
         this.remoteStream.addTrack(track);
-      })
+      });
     } else {
       this.remoteStream.addTrack(event.track);
     }
@@ -127,21 +114,6 @@ export default class Peer {
 
   sendMessageByDataChannel(message: any) {
     this.dataChannel.send(JSON.stringify(message));
-  }
-
-  setMute(type: 'audio' | 'video', muting: boolean) {
-    this.peerConnection.getSenders().forEach(sender => {
-      if (sender.track?.kind === type) {
-        sender.track.enabled = !muting;
-      }
-    });
-    this.sendMessage({
-      type: 'state',
-      id: this.peerInfo.id,
-      state: {
-        [type]: !muting,
-      }
-    });
   }
 
   addIceCandidate(candidate: RTCIceCandidate) {

@@ -5,7 +5,7 @@ import {
   Dialog, DialogTitle, DialogContent, DialogActions,
   TextField, Button, IconButton,
 } from '@mui/material';
-import MStream from '@/webrtc/MediaStream';
+import StreamManager from '@/webrtc/StreamManager';
 
 import { AudioIcon, VideoIcon } from '@/components/SwitchButton';
 import VideoCard from '@/components/VideoCard';
@@ -21,7 +21,7 @@ export default (props: any) => {
   });
   const form = useRef<FormRef>();
 
-  const stream = useMemo(() => new MStream(), []);
+  const stream = useMemo(() => new StreamManager(), []);
 
   useEffect(() => {
     stream.init({

@@ -12,25 +12,25 @@ export default (props: any) => {
     <MenuList>
       <MenuItem>
         <ListItemIcon>
-          <Icon type="icon-cc" />
+          <Icon type="cc" />
         </ListItemIcon>
         <ListItemText>打开字幕</ListItemText>
       </MenuItem>
       <MenuItem>
         <ListItemIcon>
-          <Icon type="icon-live" />
+          <Icon type="live" />
         </ListItemIcon>
         <ListItemText>转播画面</ListItemText>
       </MenuItem>
       <MenuItem>
         <ListItemIcon>
-          <Icon type="icon-effect" />
+          <Icon type="effect" />
         </ListItemIcon>
         <ListItemText>特效</ListItemText>
       </MenuItem>
       <MenuItem>
         <ListItemIcon>
-          <Icon type="icon-setting" />
+          <Icon type="setting" />
         </ListItemIcon>
         <ListItemText>设置</ListItemText>
       </MenuItem>
