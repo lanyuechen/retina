@@ -41,7 +41,7 @@ export default (props: PropType) => {
       </DropdownButton>
 
       <DropdownButton onClick={() => onAction('leave')}>
-        <Icon type="phone" className="color-danger" />
+        <Icon type="phone" danger />
         <small style={{fontSize: '10px'}}>离开</small>
       </DropdownButton>
     </Stack>

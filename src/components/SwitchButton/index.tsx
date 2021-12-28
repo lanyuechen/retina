@@ -6,11 +6,11 @@ interface PropType {
 }
 
 export const AudioIcon = ({ active }: PropType) => {
-  return active ? <Icon type="mic" /> : <Icon type="mic-off" />;
+  return active ? <Icon type="mic" /> : <Icon type="mic-off" danger />;
 }
 
 export const VideoIcon = ({ active }: PropType) => {
-  return active ? <Icon type="camera" /> : <Icon type="camera-off" className="color-danger" />;
+  return active ? <Icon type="camera" /> : <Icon type="camera-off" danger />;
 }
 
 export const PinIcon = ({ active }: PropType) => {

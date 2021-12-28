@@ -39,7 +39,7 @@ export default (props: PropType) => {
       </MenuItem>
       <MenuItem key="remove">
         <ListItemIcon>
-          <Icon type="user-delete" className="color-danger" />
+          <Icon type="user-delete" danger />
         </ListItemIcon>
         <ListItemText>从会议中移除</ListItemText>
       </MenuItem>
