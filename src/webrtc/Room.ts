@@ -65,7 +65,7 @@ export default class Room {
 
     this.peers = peers.map(d => new Peer({
       socket: this.socket!,
-      localStream: this.localStream!,
+      localStream: this.localStream,
       peerInfo: {
         ...d,
         id: getPcId(d.clientId, peer.clientId),
@@ -80,7 +80,7 @@ export default class Room {
     trace(`${peer.nickname} 加入房间“${roomId}”`);
     const newPeer = new Peer({
       socket: this.socket!,
-      localStream: this.localStream!,
+      localStream: this.localStream,
       peerInfo: {
         ...peer,
         id: getPcId(this.me!.clientId, peer.clientId),

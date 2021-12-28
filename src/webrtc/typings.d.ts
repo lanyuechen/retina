@@ -24,7 +24,7 @@ export interface PeerInitParams {
 }
 
 export interface Message {
-  type: 'offer' | 'answer' | 'candidate' | 'datachannel' | 'message' | 'state';
+  type: 'offer' | 'answer' | 'candidate' | 'datachannel' | 'message';
   id: string;
   description?: any;
   candidate?: any;

@@ -102,9 +102,6 @@ export default class Peer {
       this.setRemoteDescription(new RTCSessionDescription(message.description));
     } else if (message.type === 'candidate') {
       this.addIceCandidate(new RTCIceCandidate(message.candidate));
-    } else if (message.type === 'state') {
-      Object.assign(this, message.state);
-      this.onChange();
     }
   }
 
@@ -123,7 +120,7 @@ export default class Peer {
   async createOffer() {
     trace('发送offser');
     const description = await this.peerConnection.createOffer();
-    this.peerConnection.setLocalDescription(description);
+    await this.peerConnection.setLocalDescription(description);
     this.sendMessage({
       type: description.type,
       id: this.peerInfo.id,
@@ -134,7 +131,7 @@ export default class Peer {
   async createAnswer() {
     trace('发送answer');
     const description = await this.peerConnection.createAnswer();
-    this.peerConnection.setLocalDescription(description);
+    await this.peerConnection.setLocalDescription(description);
     this.sendMessage({
       type: description.type,
       id: this.peerInfo.id,

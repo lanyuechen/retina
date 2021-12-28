@@ -1,12 +1,10 @@
 /* eslint-disable no-undef */
 
 export default class {
-  videoStream?: MediaStream | null;
-  audioStream?: MediaStream | null;
+  videoStream: MediaStream | null = null;
+  audioStream: MediaStream | null = null;
 
-  constructor() {
-    
-  }
+  constructor() {}
 
   /**
    * 初始化音视频流
