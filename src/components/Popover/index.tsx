@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import { Popover, Button } from '@mui/material';
+import { Popover } from '@mui/material';
 
 export default (props: any) => {
   const { overlay, children } = props;

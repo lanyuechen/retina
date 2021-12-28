@@ -115,4 +115,12 @@ export default class Room {
     const event = new CustomEvent(key, { detail: args });
     dispatchEvent(event);
   }
+
+  async getDevices(type?: string) {
+    const devices = await navigator.mediaDevices.enumerateDevices();
+    if (!type) {
+      return devices;
+    }
+    return devices.filter(d => d.deviceId && d.kind === type);
+  }
 }

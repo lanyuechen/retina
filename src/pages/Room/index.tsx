@@ -21,12 +21,17 @@ export default () => {
   const { u: username, v: video, a: audio } = useQuery();
 
   const [peers, setPeers] = useState<PeerState[]>([]);
+  const [devices, setDevices] = useState<MediaDeviceInfo[]>([]);
   const [layout, setLayout] = useState<string>('gallery');
   const [drawerVisible, setDrawerVisible] = useState(false);
 
   const room = useRoom();
 
   useEffect(() => {
+    room.getDevices().then((mediaDevices: MediaDeviceInfo[]) => {
+      setDevices(mediaDevices);
+    });
+
     room.join({nickname: username}, {video, audio});
 
     room.on('change', (pcs: Peer[]) => {
@@ -78,6 +83,7 @@ export default () => {
           <div className={style.footer}>
             <Toolbar
               peers={peers}
+              devices={devices}
               onAction={handleAction}
             />
           </div>
