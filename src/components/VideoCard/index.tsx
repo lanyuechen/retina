@@ -2,6 +2,7 @@ import React from 'react';
 import { Avatar, Chip } from '@mui/material';
 import AspectCard from '@/components/AspectCard';
 import Video from '@/components/Video';
+import Audio from '@/components/Audio';
 import Tool from '@/components/Tool';
 import { AudioIcon } from '@/components/SwitchButton';
 
@@ -22,6 +23,7 @@ export default (props: PropType) => {
     <AspectCard>
       <div className={style.videoCard}>
         <Video className={style.video} src={peer.videoStream} />
+        <Audio src={peer.audioStream} />
 
         {!peer.videoStream && (
           <div className={style.icon}>
