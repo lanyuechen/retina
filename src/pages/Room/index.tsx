@@ -40,7 +40,7 @@ export default () => {
         {
           ...room.me!,
           isMe: true,
-          videoStream: room.localStream.videoStream,
+          videoStream: room.localStream.shareStream || room.localStream.videoStream,
           audioStream: room.localStream.audioStream,
         },
         ...pcs.map(d => ({
@@ -68,10 +68,10 @@ export default () => {
       room.toggleVideo();
     } else if (key === 'toggle-audio') {
       room.toggleAudio();
+    } else if (key === 'share') {
+      room.toggleShare();
     } else if (key === 'leave') {
       room.hangup();
-    } else if (key === 'share') {
-      // todo share screen
     }
   }
 

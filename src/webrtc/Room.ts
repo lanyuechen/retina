@@ -40,6 +40,11 @@ export default class Room {
     this.emit('change', this.peers);
   }
 
+  async toggleShare() {
+    await this.localStream.toggleRemoteShareStream(this.peers.map(peer => peer.peerConnection));
+    this.peers.forEach(peer => peer.createOffer());
+  }
+
   async join(peerInfo: PeerBasicInfo, constraints?: any) {
     // 连接socket
     this.connect();
