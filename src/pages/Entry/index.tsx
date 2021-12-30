@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { Stack } from '@mui/material';
+
 import Icon from '@/components/Icon';
 
 import ModalJoin from './ModalJoin';
@@ -22,29 +24,20 @@ export default () => {
 
   return (
     <div className={style.container}>
-      <div className={style.content}>
-        <div className={style.iconContainer}>
-          <BoxBtn
-            icon={<Icon type="camera" />}
-            onClick={() => setJoinMeetingVisible(true)}
-          >
-            新会议
-          </BoxBtn>
-          <BoxBtn
-            icon={<Icon type="plus-square" />}
-            onClick={() => setJoinMeetingVisible(true)}
-          >
-            加入会议
-          </BoxBtn>
-        </div>
-        <div className={style.info}>
-          <h2>流畅可协同的音视频会议</h2>
-          <ul>
-            <li>点击“新会议”，立即发起会议</li>
-            <li>点击“加入会议”，输入房间ID及用户名快速加入会议</li>
-          </ul>
-        </div>
-      </div>
+      <Stack direction="row" spacing={4}>
+        <BoxBtn
+          icon={<Icon type="camera" />}
+          onClick={() => setJoinMeetingVisible(true)}
+        >
+          新会议
+        </BoxBtn>
+        <BoxBtn
+          icon={<Icon type="plus-square" />}
+          onClick={() => setJoinMeetingVisible(true)}
+        >
+          加入会议
+        </BoxBtn>
+      </Stack>
       {joinMeetingVisible && (
         <ModalJoin visible={joinMeetingVisible} onCancel={() => setJoinMeetingVisible(false)} />
       )}
