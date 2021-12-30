@@ -3,7 +3,7 @@ import Icon from '@/components/Icon';
 
 import ModalJoin from './ModalJoin';
 
-import style from './style.less';
+import style from './style.module.less';
 
 const BoxBtn = (props: any) => {
   const { children, icon, ...others } = props;

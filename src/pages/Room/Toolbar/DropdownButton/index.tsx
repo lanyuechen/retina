@@ -3,7 +3,7 @@ import { Button } from '@mui/material';
 import Icon from '@/components/Icon';
 import Popover from '@/components/Popover';
 
-import style from './style.less';
+import style from './style.module.less';
 
 export default (props: any) => {
   const { dropdown, badge, children, onClick } = props;

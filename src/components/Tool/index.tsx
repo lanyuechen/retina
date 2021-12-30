@@ -6,7 +6,7 @@ import Icon from '@/components/Icon';
 
 import ExtraMenu from './ExtraMenu';
 
-import style from './style.less';
+import style from './style.module.less';
 
 interface PropType {
   className?: string;

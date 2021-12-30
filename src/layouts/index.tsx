@@ -1,10 +1,9 @@
 import React from 'react';
+import { Outlet } from 'react-router-dom';
 
-const BasicLayout: React.FC = props => {
+const BasicLayout: React.FC = () => {
   return (
-    <div>
-      {props.children}
-    </div>
+    <Outlet />
   );
 };
 

@@ -1,7 +1,7 @@
 import React from 'react';
 import VideoCard from '@/components/VideoCard';
 
-import style from './style.less';
+import style from './style.module.less';
 
 export default (props: any) => {
   const { peers } = props;

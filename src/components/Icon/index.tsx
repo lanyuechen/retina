@@ -1,6 +1,6 @@
 import React from 'react';
 
-import style from './style.less';
+import style from './style.module.less';
 
 export default (props: any) => {
   const { type, className = '', rotate, danger } = props;

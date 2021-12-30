@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Avatar } from '@mui/material';
 import Icon from '@/components/Icon';
 
-import style from './style.less';
+import style from './style.module.less';
 
 export default () => {
   const [ list, setList ] = useState<any>([]);

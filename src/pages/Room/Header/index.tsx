@@ -1,5 +1,5 @@
 import React from 'react';
-import { useParams } from 'umi';
+import { useParams } from 'react-router-dom';
 import { Grid, Box, Divider, Button, Typography, Card, CardContent, CardActions, Stack } from '@mui/material';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import Icon from '@/components/Icon';
@@ -7,7 +7,7 @@ import Timer from '@/components/Timer';
 import Popover from '@/components/Popover';
 import message from '@/components/message';
 
-import style from './style.less';
+import style from './style.module.less';
 
 const menuData = [
   { name: 'gallery', title: '宫格视图', icon: 'layout-grid' },

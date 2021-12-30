@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState, useMemo } from 'react';
-import { history } from 'umi';
+import { useNavigate } from 'react-router-dom';
 
 import {
   Dialog, DialogTitle, DialogContent, DialogActions,
@@ -20,6 +20,7 @@ export default (props: any) => {
     audioStream: null,
   });
   const form = useRef<FormRef>();
+  const navigate = useNavigate();
 
   const stream = useMemo(() => new StreamManager(), []);
 
@@ -41,12 +42,13 @@ export default (props: any) => {
 
   const joinMeeting = async () => {
     form.current?.submit((values: any) => {
-      history.push({
-        pathname: `/room/${values.roomId}`,
-        query: {
-          u: values.username,
-          a: me.audioStream ? 'on' : 'off',
-          v: me.videoStream ? 'on' : 'off',
+      navigate(`/room/${values.roomId}`, {
+        state: {
+          query: {
+            u: values.username,
+            a: me.audioStream ? 'on' : 'off',
+            v: me.videoStream ? 'on' : 'off',
+          }
         }
       })
     });

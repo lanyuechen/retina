@@ -14,7 +14,7 @@ import Content from './Content';
 import Toolbar from './Toolbar';
 import PeerList from './PeerList';
 
-import style from './style.less';
+import style from './style.module.less';
 
 import type { PeerState } from './typings';
 

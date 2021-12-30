@@ -6,7 +6,7 @@ import Audio from '@/components/Audio';
 import Tool from '@/components/Tool';
 import { AudioIcon } from '@/components/SwitchButton';
 
-import style from './style.less';
+import style from './style.module.less';
 
 interface PropType {
   peer: any;

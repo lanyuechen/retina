@@ -1,5 +1,3 @@
-/* eslint-disable no-undef */
-
 export default class {
   videoStream: MediaStream | null = null;
   shareStream: MediaStream | null = null;
