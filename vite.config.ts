@@ -13,6 +13,11 @@ export default defineConfig({
   base,
   build: {
     assetsDir: '',
+    rollupOptions: {
+      output: {
+        manualChunks: undefined
+      }
+    }
   },
   server: {
     proxy: {
