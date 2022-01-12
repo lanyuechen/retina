@@ -3,10 +3,10 @@ import { trace } from '@/webrtc/utils/log';
 const WS = '__WS__';
 
 class Socket {
-  ws!: WebSocket;
-  sid?: string; 
-  room?: string;
-  handler: {[key: string]: Function[]} = {};
+  private ws?: WebSocket | null;
+  private handler: {[key: string]: Function[]} = {};
+  clientId?: string; 
+  roomId?: string;
   peerInfo: any;
   onJoinedRoom?: Function;
 
@@ -18,37 +18,76 @@ class Socket {
   }
 
   constructor() {
-    this.connect();
+
   }
 
-  connect() {
+  joinRoom(roomId: string, peerInfo: any, onJoinedRoom: Function) {
+    this.onJoinedRoom = onJoinedRoom;
+    this.roomId = roomId;
+    this.peerInfo = peerInfo;
+
+    this.connect();
+    this.login(peerInfo.nickname);
+    this.send({ joinHub: roomId });
+  }
+
+  leaveRoom() {
+    this.ws?.close();
+    this.ws = null;
+    this.handler = {};
+    this.send({ leaveHub: this.roomId });
+  }
+
+  broadcast(message: any) {
+    this.send({ toH: this.roomId, type: 'message', message });
+  }
+
+  on(key: 'message', cb: Function) {
+    this.handler[key] = this.handler[key] || [];
+    this.handler[key].push(cb);
+  }
+
+  private connect() {
     this.ws = new WebSocket('wss://ws.achex.ca');
     
-    this.ws.onmessage = this.handleMessage.bind(this);
     this.ws.onopen = this.handleOpen.bind(this);
     this.ws.onclose = this.handleClose.bind(this);
     this.ws.onerror = this.handleError.bind(this);
+    this.ws.onmessage = this.handleMessage.bind(this);
   }
 
-  handleOpen(e: Event) {
+  private login(username: string) {
+    this.send({ auth: username, passwd: '123456' });
+  }
+
+  private getUsers() {
+    this.send({ 'serverstat': true });
+  }
+
+  private send(message: any) {
+    trace('send', message);
+    this.ws?.send(JSON.stringify(message));
+  }
+
+  private handleOpen(e: Event) {
     trace('webSocket', 'open', e);
   }
 
-  handleClose(e: CloseEvent) {
+  private handleClose(e: CloseEvent) {
     trace('webSocket', 'close', e);
   }
 
-  handleError(e: Event) {
+  private handleError(e: Event) {
     trace('webSocket', 'error', e);
   }
 
-  handleMessage(e: MessageEvent) {
+  private handleMessage(e: MessageEvent) {
     const data = JSON.parse(e.data);
 
     if (data.auth === 'OK') {
       // 登录成功
       trace('receive', 'login success');
-      this.sid = data.SID;
+      this.clientId = data.SID;
     } else if (data.joinHub === 'OK') {
       // 加入房间成功
       trace('receive', 'join room success');
@@ -56,16 +95,16 @@ class Socket {
         type: 'peer-join-room',
         peer: {
           ...this.peerInfo,
-          clientId: this.sid,
+          clientId: this.clientId,
         },
-        roomId: this.room,
+        roomId: this.roomId,
       });
 
       this.getUsers();
     } else if (data.users) {
       // 获取用户列表成功
       const peers = data.users
-        .filter((user: any, i: number) => i > 0 &&  user.hub === this.room && this.peerInfo.nickname !== user.username)
+        .filter((user: any, i: number) => i > 0 &&  user.hub === this.roomId && this.peerInfo.nickname !== user.username)
         .map((user: any) => ({
           nickname: user.username,
           clientId: user.session,
@@ -73,10 +112,10 @@ class Socket {
       this.onJoinedRoom?.({
         peer: {
           ...this.peerInfo,
-          clientId: this.sid,
+          clientId: this.clientId,
         },
         peers,
-        roomId: this.room,
+        roomId: this.roomId,
       });
     } else if (data.leftHub) {
       trace('receive', `${data.username}(${data.sID}) left room`);
@@ -101,41 +140,6 @@ class Socket {
     } else {
       trace('receive', 'other', data);
     }
-  }
-
-  login(username: string) {
-    this.send({ auth: username, passwd: '123456' });
-  }
-
-  joinRoom(name: string, peerInfo: any, onJoinedRoom: Function) {
-    this.onJoinedRoom = onJoinedRoom;
-    this.room = name;
-    this.peerInfo = peerInfo;
-
-    this.login(peerInfo.nickname);
-    this.send({ joinHub: name });
-  }
-
-  leaveRoom() {
-    this.send({ leaveHub: this.room });
-  }
-
-  broadcast(message: any) {
-    this.send({ toH: this.room, type: 'message', message });
-  }
-
-  on(key: string, cb: Function) {
-    this.handler[key] = this.handler[key] || [];
-    this.handler[key].push(cb);
-  }
-
-  getUsers() {
-    this.send({ 'serverstat': true });
-  }
-
-  send(message: any) {
-    trace('send', message);
-    this.ws.send(JSON.stringify(message));
   }
 }
 

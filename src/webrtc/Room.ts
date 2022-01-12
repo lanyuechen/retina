@@ -2,7 +2,7 @@ import Peer from './Peer';
 import StreamManager from '@/webrtc/StreamManager';
 import { trace } from "./utils/log";
 import { getPcId } from './utils/utils';
-import Socket from './utils/Socket';
+import Socket from './Socket';
 
 import type { PeerBasicInfo, PeerInfo } from './typings';
 

@@ -1,6 +1,6 @@
 import { trace } from './utils/log';
 import { noop } from './utils/utils';
-import Socket from './utils/Socket';
+import Socket from './Socket';
 
 import StreamManager from '@/webrtc/StreamManager';
 
