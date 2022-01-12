@@ -39,7 +39,7 @@ export default class Peer {
   // 当调用PeerConnection.setLocalDescription()后触发，并发消息给其他用户
   handleIceCandidate(event: RTCPeerConnectionIceEvent) {
     if (event.candidate) {
-      this.sendMessage({
+      Socket.broadcast({
         type: 'candidate',
         id: this.peerInfo.id,
         candidate: {
@@ -81,9 +81,6 @@ export default class Peer {
 
     if (message.type === 'datachannel') {
       this.dataChannel = message.channel;
-    } else if (message.type === 'state') {
-      Object.assign(this, message.state);
-      this.onChange();
     }
   }
 
@@ -104,10 +101,6 @@ export default class Peer {
   }
 
   sendMessage(message: any) {
-    Socket.broadcast(message);
-  }
-
-  sendMessageByDataChannel(message: any) {
     this.dataChannel.send(JSON.stringify(message));
   }
 
@@ -119,7 +112,7 @@ export default class Peer {
     trace('发送offser');
     const description = await this.peerConnection.createOffer();
     await this.peerConnection.setLocalDescription(description);
-    this.sendMessage({
+    Socket.broadcast({
       type: description.type,
       id: this.peerInfo.id,
       description,
@@ -130,7 +123,7 @@ export default class Peer {
     trace('发送answer');
     const description = await this.peerConnection.createAnswer();
     await this.peerConnection.setLocalDescription(description);
-    this.sendMessage({
+    Socket.broadcast({
       type: description.type,
       id: this.peerInfo.id,
       description,

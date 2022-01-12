@@ -30,7 +30,7 @@ export default (props: any) => {
           <Grid item xs={9}>{id}</Grid>
         
           <Grid item xs={3}>会议链接</Grid>
-          <Grid item xs={9}>http://localhost:3000/conf</Grid>
+          <Grid item xs={9}>https://lanyuechen.github.io/retina/#/entry</Grid>
         
           <Grid item xs={3}>电话拨入</Grid>
           <Grid item xs={9}>
@@ -41,7 +41,7 @@ export default (props: any) => {
       </CardContent>
       <CardActions>
         <CopyToClipboard
-          text={`会议ID: ${id}\n会议链接: http://localhost:3000/conf\n电话拨入: +86 10 8888 8888(中国大陆)`}
+          text={`会议ID: ${id}\n会议链接: https://lanyuechen.github.io/retina/#/entry\n电话拨入: +86 10 8888 8888(中国大陆)`}
           onCopy={() => message.success('复制成功')}
         >
           <Button size="small">复制入会信息</Button>

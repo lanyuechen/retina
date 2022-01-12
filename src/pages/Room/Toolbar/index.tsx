@@ -81,11 +81,11 @@ export default (props: PropType) => {
   return (
     <Stack direction="row" alignItems="center" style={{height: '100%'}}>
       <DropdownButton onClick={() => onAction('toggle-audio')} dropdown={audioDevices}>
-        <AudioIcon active={!me.audioStream} />
+        <AudioIcon active={me.audioStream} />
         <small style={{fontSize: '10px'}}>麦克风</small>
       </DropdownButton>
       <DropdownButton onClick={() => onAction('toggle-video')} dropdown={videoDevices}>
-        <VideoIcon active={!me.videoStream} />
+        <VideoIcon active={me.videoStream} />
         <small style={{fontSize: '10px'}}>摄像头</small>
       </DropdownButton>
       <DropdownButton onClick={() => onAction('show-peers')} badge={peers.length}>
