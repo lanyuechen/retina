@@ -1,8 +1,8 @@
-import io, { Socket } from 'socket.io-client';
 import Peer from './Peer';
 import StreamManager from '@/webrtc/StreamManager';
 import { trace } from "./utils/log";
 import { getPcId } from './utils/utils';
+import Socket from './utils/Socket';
 
 import type { PeerBasicInfo, PeerInfo } from './typings';
 
@@ -13,7 +13,6 @@ export default class Room {
   peers: Peer[];
   me: PeerInfo | null = null;
   localStream: StreamManager;
-  socket: Socket | undefined;
 
   static getInstance(roomId: string) {
     if (!window[ROOM]) {
@@ -46,21 +45,18 @@ export default class Room {
   }
 
   async join(peerInfo: PeerBasicInfo, constraints?: any) {
-    // 连接socket
-    this.connect();
 
     await this.localStream.init(constraints);
 
-    // 加入房间
-    this.socket?.emit('joinRoom', this.roomId, peerInfo);
-  }
+    Socket.on('message', (message: any) => {
+      if (message.type === 'peer-join-room') {
+        this.handlePeerJoinRoom(message);
+      } else if (message.type === 'peer-leave-room') {
+        this.handlePeerLeaveRoom(message.peer.clientId);
+      }
+    });
 
-  connect() {
-    this.socket = io(localStorage.serverAddr);
-
-    this.socket.on('joined-room', this.handleJoinedRoom.bind(this));
-    this.socket.on('peer-join-room', this.handlePeerJoinRoom.bind(this));
-    this.socket.on('peer-leave-room', this.handlePeerLeaveRoom.bind(this));
+    Socket.joinRoom(this.roomId, peerInfo, this.handleJoinedRoom.bind(this));
   }
 
   async handleJoinedRoom({ peer, peers, roomId }: {peer: any; peers: any[]; roomId: string}) {
@@ -69,7 +65,6 @@ export default class Room {
     this.me = peer;
 
     this.peers = peers.map(d => new Peer({
-      socket: this.socket!,
       localStream: this.localStream,
       peerInfo: {
         ...d,
@@ -84,7 +79,6 @@ export default class Room {
   handlePeerJoinRoom({ peer, roomId }: {peer: PeerInfo; roomId: string}) {
     trace(`${peer.nickname} 加入房间“${roomId}”`);
     const newPeer = new Peer({
-      socket: this.socket!,
       localStream: this.localStream,
       peerInfo: {
         ...peer,
@@ -107,7 +101,7 @@ export default class Room {
 
   hangup() {
     trace('挂断');
-    this.socket?.disconnect();
+    Socket.leaveRoom();
   }
 
   on(key: string, fn: (...args: any) => void) {

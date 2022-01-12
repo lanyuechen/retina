@@ -1,21 +1,19 @@
 import { trace } from './utils/log';
 import { noop } from './utils/utils';
+import Socket from './utils/Socket';
 
 import StreamManager from '@/webrtc/StreamManager';
 
-import type { Socket } from 'socket.io-client';
 import type { PeerInfo, PeerInitParams, Message } from './typings';
 
 export default class Peer {
   peerInfo: PeerInfo;
-  socket: Socket;
   peerConnection: RTCPeerConnection;
   dataChannel: RTCDataChannel;
   remoteStream: StreamManager;
   onChange: () => void;
 
-  constructor({ socket, localStream, peerInfo, onChange }: PeerInitParams) {
-    this.socket = socket;
+  constructor({ localStream, peerInfo, onChange }: PeerInitParams) {
     this.peerInfo = peerInfo;
     this.onChange = onChange || noop;
 
@@ -31,7 +29,7 @@ export default class Peer {
     this.dataChannel.addEventListener('close', this.handleDataChannelChange.bind(this));
     this.dataChannel.addEventListener('message', this.handleDataChannelMessage.bind(this));
 
-    this.socket.on('message', this.handleMessage.bind(this));
+    Socket.on('message', this.handleMessage.bind(this));
 
     this.remoteStream = new StreamManager();
 
@@ -106,7 +104,7 @@ export default class Peer {
   }
 
   sendMessage(message: any) {
-    this.socket?.emit('message', message);
+    Socket.broadcast(message);
   }
 
   sendMessageByDataChannel(message: any) {

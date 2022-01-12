@@ -19,14 +19,6 @@ export default defineConfig({
       }
     }
   },
-  server: {
-    proxy: {
-      '/socket.io': {
-        target: 'http://47.93.45.233:8080',
-        ws: true,
-      },
-    },
-  },
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
