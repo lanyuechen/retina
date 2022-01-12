@@ -70,6 +70,8 @@ export default () => {
       room.toggleAudio();
     } else if (key === 'share') {
       room.toggleShare();
+    } else if (key === 'recorder') {
+      room.record();
     } else if (key === 'leave') {
       room.hangup();
     }

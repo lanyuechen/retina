@@ -96,7 +96,7 @@ export default (props: PropType) => {
         <Icon type="share-screen" style={{color: 'rgb(52, 199, 58)'}} />
         <small style={{fontSize: '10px'}}>共享</small>
       </DropdownButton>
-      <DropdownButton onClick={() => onAction('share')}>
+      <DropdownButton onClick={() => onAction('recorder')}>
         <Icon type="recording" />
         <small style={{fontSize: '10px'}}>开始录制</small>
       </DropdownButton>

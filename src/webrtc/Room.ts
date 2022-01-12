@@ -44,6 +44,10 @@ export default class Room {
     this.peers.forEach(peer => peer.createOffer());
   }
 
+  record() {
+    console.log('[record]');
+  }
+
   async join(peerInfo: PeerBasicInfo, constraints?: any) {
 
     await this.localStream.init(constraints);
