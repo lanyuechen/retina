@@ -21,12 +21,12 @@ class Socket {
 
   }
 
-  joinRoom(roomId: string, peerInfo: any, onJoinedRoom: Function) {
+  async joinRoom(roomId: string, peerInfo: any, onJoinedRoom: Function) {
     this.onJoinedRoom = onJoinedRoom;
     this.roomId = roomId;
     this.peerInfo = peerInfo;
 
-    this.connect();
+    await this.connect();
     this.login(peerInfo.nickname);
     this.send({ joinHub: roomId });
   }
@@ -42,18 +42,32 @@ class Socket {
     this.send({ toH: this.roomId, type: 'message', message });
   }
 
+  sendTo(clientId: string, message: any) {
+    this.send({ toS: clientId, type: 'message', message });
+  }
+
   on(key: 'message', cb: Function) {
     this.handler[key] = this.handler[key] || [];
     this.handler[key].push(cb);
   }
 
   private connect() {
-    this.ws = new WebSocket('wss://ws.achex.ca');
+    return new Promise<void>((resolve, reject) => {
+      this.ws = new WebSocket('wss://ws.achex.ca');
     
-    this.ws.onopen = this.handleOpen.bind(this);
-    this.ws.onclose = this.handleClose.bind(this);
-    this.ws.onerror = this.handleError.bind(this);
-    this.ws.onmessage = this.handleMessage.bind(this);
+      this.ws.onclose = this.handleClose.bind(this);
+      this.ws.onmessage = this.handleMessage.bind(this);
+      
+      this.ws.onopen = (e: Event) => {
+        trace('webSocket', 'open', e);
+        resolve();
+      };
+
+      this.ws.onerror = (e: Event) => {
+        trace('webSocket', 'error', e);
+        reject(e);
+      };
+    });
   }
 
   private login(username: string) {
@@ -69,16 +83,8 @@ class Socket {
     this.ws?.send(JSON.stringify(message));
   }
 
-  private handleOpen(e: Event) {
-    trace('webSocket', 'open', e);
-  }
-
   private handleClose(e: CloseEvent) {
     trace('webSocket', 'close', e);
-  }
-
-  private handleError(e: Event) {
-    trace('webSocket', 'error', e);
   }
 
   private handleMessage(e: MessageEvent) {
@@ -109,6 +115,8 @@ class Socket {
           nickname: user.username,
           clientId: user.session,
         }));
+
+      trace('receive', 'get users success', peers);
       this.onJoinedRoom?.({
         peer: {
           ...this.peerInfo,
@@ -118,13 +126,13 @@ class Socket {
         roomId: this.roomId,
       });
     } else if (data.leftHub) {
-      trace('receive', `${data.username}(${data.sID}) left room`);
+      trace('receive', `${data.user}(${data.sID}) left room`);
       if (this.handler.message) {
         for (let fn of this.handler.message) {
           fn({
             type: 'peer-leave-room',
             peer: {
-              nickname: data.username,
+              nickname: data.user,
               clientId: data.sID,
             }
           });

@@ -1,13 +1,13 @@
-import React, { useEffect, useState } from 'react';
-
+import React, { useEffect, useState, useMemo } from 'react';
+import { useParams } from 'react-router-dom';
 import { Drawer, Divider, IconButton, Typography, Stack } from '@mui/material';
 
 import Peer from '@/webrtc/Peer';
+import Room from '@/webrtc/Room';
 
 import Chat from '@/components/Chat';
 import Icon from '@/components/Icon';
 import useQuery from '@/utils/use-query';
-import useRoom from '@/utils/use-room';
 
 import Header from './Header';
 import Content from './Content';
@@ -19,6 +19,7 @@ import style from './style.module.less';
 import type { PeerState } from './typings';
 
 export default () => {
+  const { id } = useParams<{id: string}>();
   const { u: username, v: video, a: audio } = useQuery();
 
   const [peers, setPeers] = useState<PeerState[]>([]);
@@ -26,7 +27,7 @@ export default () => {
   const [layout, setLayout] = useState<string>('gallery');
   const [drawerVisible, setDrawerVisible] = useState(false);
 
-  const room = useRoom();
+  const room = useMemo(() => Room.getInstance(id!), []);
 
   useEffect(() => {
     room.getDevices().then((mediaDevices: MediaDeviceInfo[]) => {
@@ -118,7 +119,7 @@ export default () => {
         <Divider />
         <PeerList peers={peers} />
       </Drawer>
-      <Chat />
+      <Chat room={room} />
     </div>
   );
 }

@@ -44,6 +44,10 @@ export default class Room {
     this.peers.forEach(peer => peer.createOffer());
   }
 
+  broadcast(message: any) {
+    this.peers.forEach(peer => peer.sendMessage(message));
+  }
+
   record() {
     console.log('[record]');
   }
@@ -75,6 +79,7 @@ export default class Room {
         id: getPcId(d.clientId, peer.clientId),
       },
       onChange: () => this.emit('change', this.peers),
+      onDataChannelMessage: (message: any) => this.emit('data-channel-message', message),
     }));
 
     this.emit('change', this.peers);
@@ -89,6 +94,7 @@ export default class Room {
         id: getPcId(this.me!.clientId, peer.clientId),
       },
       onChange: () => this.emit('change', this.peers),
+      onDataChannelMessage: (message: any) => this.emit('data-channel-message', message),
     });
     newPeer.createOffer();
 

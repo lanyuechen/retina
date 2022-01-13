@@ -12,10 +12,12 @@ export default class Peer {
   dataChannel: RTCDataChannel;
   remoteStream: StreamManager;
   onChange: () => void;
+  onDataChannelMessage: (message: any) => void;
 
-  constructor({ localStream, peerInfo, onChange }: PeerInitParams) {
+  constructor({ localStream, peerInfo, onChange, onDataChannelMessage }: PeerInitParams) {
     this.peerInfo = peerInfo;
     this.onChange = onChange || noop;
+    this.onDataChannelMessage = onDataChannelMessage || noop;
 
     const servers = undefined;
 
@@ -77,11 +79,8 @@ export default class Peer {
 
   handleDataChannelMessage(event: MessageEvent) {
     const message = JSON.parse(event.data);
-    trace('Receive message by data channel', message);
-
-    if (message.type === 'datachannel') {
-      this.dataChannel = message.channel;
-    }
+    trace('dataChannel', 'receive message', message);
+    this.onDataChannelMessage(message);
   }
 
   handleMessage(message: Message) {
@@ -101,6 +100,7 @@ export default class Peer {
   }
 
   sendMessage(message: any) {
+    trace('dataChannel', 'send message', message);
     this.dataChannel.send(JSON.stringify(message));
   }
 

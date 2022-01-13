@@ -19,6 +19,7 @@ export interface PeerInitParams {
   localStream: StreamManager;
   peerInfo: PeerInfo;
   onChange?: () => void;
+  onDataChannelMessage?: (message: any) => void;
 }
 
 export interface Message {
