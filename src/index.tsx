@@ -3,8 +3,8 @@ import ReactDOM from 'react-dom';
 import { HashRouter as Router, Routes, Route } from 'react-router-dom';
 
 import Layout from '@/layouts/index';
-import Home from '@/pages/index';
-import Entry from '@/pages/Entry';
+import Home from '@/pages/Home';
+import Join from '@/pages/Join';
 import Room from '@/pages/Room';
 import Test from '@/pages/Test';
 import NotFound from '@/pages/404';
@@ -18,7 +18,7 @@ const App = () => {
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />
           <Route path="/test" element={<Test />} />
-          <Route path="/entry" element={<Entry />} />
+          <Route path="/join" element={<Join />} />
           <Route path="/room/:id" element={<Room />} />
           <Route path="*" element={<NotFound />} />
         </Route>
