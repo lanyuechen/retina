@@ -3,7 +3,13 @@ import { useForm, Controller } from 'react-hook-form';
 
 export type { FormRef } from './typings';
 
-export default forwardRef((props: any, ref: any) => {
+import Checkbox from './Checkbox';
+
+interface IForm extends React.ForwardRefExoticComponent<any> {
+  Checkbox: typeof Checkbox;
+};
+
+const Form = forwardRef((props: any, ref: any) => {
   const { children, defaultValues, rules } = props;
 
   const { control, handleSubmit, getValues, setValue } = useForm({
@@ -30,4 +36,8 @@ export default forwardRef((props: any, ref: any) => {
       })}
     />
   ));
-});
+}) as IForm;
+
+Form.Checkbox = Checkbox;
+
+export default Form;

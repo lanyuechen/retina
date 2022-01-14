@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState, useMemo } from 'react';
 import { useNavigate, createSearchParams } from 'react-router-dom';
 
 import {
-  Box, FormControl, FormControlLabel, Checkbox,
+  Box,
   TextField, Button,
 } from '@mui/material';
 
@@ -35,8 +35,9 @@ export default (props: any) => {
         <Form
           ref={form}
           defaultValues={{
-            roomId: '',
+            roomId: 'test',
             username: '',
+            video: true,
           }}
           rules={{
             roomId: {required: '房间ID不能为空'}
@@ -57,8 +58,11 @@ export default (props: any) => {
             fullWidth
           />
 
-          <FormControlLabel name="video" control={<Checkbox size="small" defaultChecked />} label="视频" />
-          <FormControlLabel name="audio" control={<Checkbox size="small" />} label="声音" />
+          <Form.Checkbox name="video" label="视频" />
+          <Form.Checkbox name="audio" label="音频" />
+
+          {/* <FormControlLabel name="video" control={<Checkbox size="small" />} label="视频" />
+          <FormControlLabel name="audio" control={<Checkbox size="small" />} label="声音" /> */}
 
         </Form>
 
