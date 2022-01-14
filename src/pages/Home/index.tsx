@@ -9,7 +9,7 @@ export default () => {
     <div className={style.container}>
       <div className={style.content}>
         <h1>
-          <img src="/favicon.svg" alt="retina" />
+          <img src={`${import.meta.env.BASE_URL}favicon.svg`} alt="retina" />
           &nbsp;Retina
         </h1>
         <h2>Retina is a simple but powerful tool for designers and developers.</h2>
