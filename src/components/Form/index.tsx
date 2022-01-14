@@ -4,9 +4,11 @@ import { useForm, Controller } from 'react-hook-form';
 export type { FormRef } from './typings';
 
 import Checkbox from './Checkbox';
+import Input from './Input';
 
 interface IForm extends React.ForwardRefExoticComponent<any> {
   Checkbox: typeof Checkbox;
+  Input: typeof Input;
 };
 
 const Form = forwardRef((props: any, ref: any) => {
@@ -39,5 +41,6 @@ const Form = forwardRef((props: any, ref: any) => {
 }) as IForm;
 
 Form.Checkbox = Checkbox;
+Form.Input = Input;
 
 export default Form;

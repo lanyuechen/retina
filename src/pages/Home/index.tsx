@@ -17,7 +17,7 @@ export default () => {
           <Icon type="github" />&nbsp;&nbsp;Github
         </a>
         &nbsp;&nbsp;&nbsp;&nbsp;
-        <Link to="/workspace" className={style.btn}>
+        <Link to="/join" className={style.btn}>
           <Icon type="plus-square" />&nbsp;&nbsp;加入会议
         </Link>
       </div>

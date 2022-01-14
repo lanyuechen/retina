@@ -1,23 +1,18 @@
-import React, { useEffect, useRef, useState, useMemo } from 'react';
+import React, { useRef } from 'react';
 import { useNavigate, createSearchParams } from 'react-router-dom';
 
-import {
-  Box,
-  TextField, Button,
-} from '@mui/material';
+import { Box, Button } from '@mui/material';
 
 import Form, { FormRef } from '@/components/Form';
 
 import style from './style.module.less';
 
-export default (props: any) => {
+export default () => {
   const form = useRef<FormRef>();
   const navigate = useNavigate();
 
   const joinMeeting = async () => {
     form.current?.submit((values: any) => {
-      console.log('====', values);
-      return;
       navigate({
         pathname: `/room/${values.roomId}`,
         search: `?${createSearchParams({
@@ -38,31 +33,17 @@ export default (props: any) => {
             roomId: 'test',
             username: '',
             video: true,
+            audio: false,
           }}
           rules={{
             roomId: {required: '房间ID不能为空'}
           }}
         >
-          <TextField
-            name="roomId"
-            label="房间ID"
-            variant="standard"
-            autoFocus
-            fullWidth
-          />
-          <TextField
-            name="username"
-            label="用户名"
-            margin="normal"
-            variant="standard"
-            fullWidth
-          />
+          <Form.Input name="roomId" label="房间ID" fullWidth />
+          <Form.Input name="username" label="用户名" fullWidth />
 
           <Form.Checkbox name="video" label="视频" />
           <Form.Checkbox name="audio" label="音频" />
-
-          {/* <FormControlLabel name="video" control={<Checkbox size="small" />} label="视频" />
-          <FormControlLabel name="audio" control={<Checkbox size="small" />} label="声音" /> */}
 
         </Form>
 
