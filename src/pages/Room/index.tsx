@@ -87,15 +87,13 @@ export default () => {
         <div className={style.content}>
           <Content layout={layout} peers={peers} />
         </div>
-        {peers[0] && (
-          <div className={style.footer}>
-            <Toolbar
-              peers={peers}
-              devices={devices}
-              onAction={handleAction}
-            />
-          </div>
-        )}
+        <div className={style.footer}>
+          <Toolbar
+            peers={peers}
+            devices={devices}
+            onAction={handleAction}
+          />
+        </div>
       </div>
       <Drawer
         variant="persistent"

@@ -11,7 +11,6 @@ import style from './style.module.less';
 
 const menuData = [
   { name: 'gallery', title: '宫格视图', icon: 'layout-grid' },
-  // { name: 'thumbnail', title: '缩略图视图' },
   { name: 'speaker', title: '演讲者视图', icon: 'layout-speaker' },
 ];
 
@@ -26,27 +25,21 @@ export default (props: any) => {
           nickname
         </Typography>
         <Grid container rowSpacing={1}>
-          <Grid item xs={3}>会议ID</Grid>
+          <Grid item xs={3}>房间ID</Grid>
           <Grid item xs={9}>{id}</Grid>
         
-          <Grid item xs={3}>会议链接</Grid>
-          <Grid item xs={9}>https://lanyuechen.github.io/retina/#/entry</Grid>
+          <Grid item xs={3}>房间链接</Grid>
+          <Grid item xs={9}>https://lanyuechen.github.io/retina/#/join</Grid>
         
-          <Grid item xs={3}>电话拨入</Grid>
-          <Grid item xs={9}>
-            +86 10 8888 8888(中国大陆) <br />
-            <a>更多电话号码</a>
-          </Grid>
         </Grid>
       </CardContent>
       <CardActions>
         <CopyToClipboard
-          text={`会议ID: ${id}\n会议链接: https://lanyuechen.github.io/retina/#/entry\n电话拨入: +86 10 8888 8888(中国大陆)`}
+          text={`房间ID: ${id}\n房间链接: https://lanyuechen.github.io/retina/#/join`}
           onCopy={() => message.success('复制成功')}
         >
-          <Button size="small">复制入会信息</Button>
+          <Button size="small">复制房间信息</Button>
         </CopyToClipboard>
-        <Button size="small">分享至会话</Button>
       </CardActions>
     </Card>
   );

@@ -12,7 +12,7 @@ interface PropType {
 
 export default (props: PropType) => {
   const { peers, devices, onAction } = props;
-  const me = peers[0];
+  const me = peers[0] || {};
 
   const menu = (
     <MenuList>

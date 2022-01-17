@@ -2,9 +2,9 @@ import React from 'react';
 import { Stack, Grid } from '@mui/material';
 import VideoCard from '@/components/VideoCard';
 
-import type { GalleryLayoutProps } from './typings';
+import type { PeerInfo } from '@/webrtc/typings';
 
-export default (props: GalleryLayoutProps) => {
+export default (props: {peers: PeerInfo[]}) => {
   const { peers } = props;
 
   const cols = Math.ceil(Math.sqrt(peers.length));
