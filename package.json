@@ -16,7 +16,7 @@
     "react": "^17.0.2",
     "react-copy-to-clipboard": "^5.0.4",
     "react-dom": "^17.0.2",
-    "react-hook-form": "^7.22.5",
+    "react-hook-form": "^7.24.0",
     "react-router-dom": "^6.2.1",
     "react-transition-group": "^4.4.2"
   },
@@ -25,11 +25,11 @@
     "@types/react": "^17.0.38",
     "@types/react-copy-to-clipboard": "^5.0.2",
     "@types/react-dom": "^17.0.11",
-    "@types/web": "0.0.48",
+    "@types/web": "0.0.49",
     "@vitejs/plugin-react": "^1.1.4",
     "less": "^4.1.2",
     "typescript": "^4.5.4",
-    "vite": "^2.7.10"
+    "vite": "^2.7.12"
   },
   "license": "UNLICENSED"
 }
