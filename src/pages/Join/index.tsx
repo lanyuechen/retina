@@ -27,6 +27,7 @@ export default () => {
   return (
     <div className={style.container}>
       <Box sx={{ width: 300 }}>
+        <h2>加入房间</h2>
         <Form
           ref={form}
           defaultValues={{
