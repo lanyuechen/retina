@@ -61,15 +61,15 @@ export default class Peer {
 
   handleRemoteTrack(event: RTCTrackEvent) {
     trace('remote track', event);
-    this.remoteStream.endVideoStream();
-    this.remoteStream.endAudioStream();
-    if (event.streams && event.streams[0]) {
-      event.streams[0].getTracks().forEach(track => {
-        this.remoteStream.addTrack(track);
-      });
-    } else {
-      this.remoteStream.addTrack(event.track);
+
+    if (event.track.kind === 'video') {
+      this.remoteStream.endVideoStream();
+    } else if (event.track.kind === 'audio') {
+      this.remoteStream.endAudioStream();
     }
+
+    this.remoteStream.addTrack(event.track);
+    
     this.onChange();
   }
 
