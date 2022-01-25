@@ -1,5 +1,6 @@
 import Peer from './Peer';
 import StreamManager from '@/webrtc/StreamManager';
+import Recorder from '@/webrtc/Recorder';
 import { trace } from "./utils/log";
 import { getPcId } from './utils/utils';
 import Socket from './Socket';
@@ -13,6 +14,7 @@ export default class Room {
   peers: Peer[];
   me: PeerInfo | null = null;
   localStream: StreamManager;
+  recorder: Recorder | null = null;
 
   static getInstance(roomId: string) {
     if (!window[ROOM]) {
@@ -39,17 +41,31 @@ export default class Room {
     this.emit('change', this.peers);
   }
 
-  async toggleShare() {
-    await this.localStream.toggleRemoteShareStream(this.peers.map(peer => peer.peerConnection));
+  toggleRecord() {
+    console.log('[record]');
+    if (this.recorder) {
+      this.recorder.stop();
+      this.recorder = null;
+    } else if (this.localStream.videoStream) {
+      this.recorder = new Recorder(this.localStream.videoStream);
+      this.recorder.start();
+    }
+  }
+
+  async startShare() {
+    await this.localStream.startRemoteShareStream(
+      this.peers.map(peer => peer.peerConnection),
+      undefined,
+      () => {
+        this.localStream.endRemoteShareStream(this.peers.map(peer => peer.peerConnection));
+        this.peers.forEach(peer => peer.createOffer());
+      }
+    );
     this.peers.forEach(peer => peer.createOffer());
   }
 
   broadcast(message: any) {
     this.peers.forEach(peer => peer.sendMessage(message));
-  }
-
-  record() {
-    console.log('[record]');
   }
 
   async join(peerInfo: PeerBasicInfo, constraints?: any) {

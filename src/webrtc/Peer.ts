@@ -35,7 +35,7 @@ export default class Peer {
 
     this.remoteStream = new StreamManager();
 
-    localStream.addRemoteTrack(this.peerConnection);
+    localStream.initTracks(this.peerConnection);
   }
 
   // 当调用PeerConnection.setLocalDescription()后触发，并发消息给其他用户

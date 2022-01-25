@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useMemo } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { Drawer, Divider, IconButton, Typography, Stack } from '@mui/material';
 
 import Peer from '@/webrtc/Peer';
@@ -21,6 +21,7 @@ import type { PeerState } from './typings';
 export default () => {
   const { id } = useParams<{id: string}>();
   const { u: username, v: video, a: audio } = useQuery();
+  const navigate = useNavigate();
 
   const [peers, setPeers] = useState<PeerState[]>([]);
   const [devices, setDevices] = useState<MediaDeviceInfo[]>([]);
@@ -34,14 +35,14 @@ export default () => {
       setDevices(mediaDevices);
     });
 
-    room.join({nickname: username}, {video, audio});
+    room.join({nickname: username}, { video: video === 'on', audio: audio === 'on' });
 
     room.on('change', (pcs: Peer[]) => {
       setPeers([
         {
           ...room.me!,
           isMe: true,
-          videoStream: room.localStream.shareStream || room.localStream.videoStream,
+          videoStream: room.localStream.videoStream,
           audioStream: room.localStream.audioStream,
         },
         ...pcs.map(d => ({
@@ -70,11 +71,11 @@ export default () => {
     } else if (key === 'toggle-audio') {
       room.toggleAudio();
     } else if (key === 'share') {
-      room.toggleShare();
+      room.startShare();
     } else if (key === 'recorder') {
-      room.record();
+      room.toggleRecord();
     } else if (key === 'leave') {
-      room.hangup();
+      navigate({ pathname: `/join` });
     }
   }
 

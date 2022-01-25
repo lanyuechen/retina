@@ -32,12 +32,13 @@ export default () => {
           ref={form}
           defaultValues={{
             roomId: 'test',
-            username: '',
+            username: 'test',
             video: true,
             audio: false,
           }}
           rules={{
-            roomId: {required: '房间ID不能为空'}
+            roomId: {required: '房间ID不能为空'},
+            username: {required: '用户名不能为空'},
           }}
         >
           <Form.Input name="roomId" label="房间ID" fullWidth />

@@ -2,7 +2,6 @@ export default class {
   videoStream: MediaStream | null = null;
   shareStream: MediaStream | null = null;
   audioStream: MediaStream | null = null;
-  isVideoOn: Boolean = false;
 
   constructor() {}
 
@@ -39,24 +38,14 @@ export default class {
   // 开启远程视频流
   async startRemoteVideoStream(pcs: RTCPeerConnection[], options?: MediaTrackConstraints) {
     const stream = await this.startVideoStream(options);
-    stream.getTracks().forEach((track) => {
-      pcs.forEach((pc) => {
-        pc.addTrack(track);
-      });
-    });
+    this.updateTracks(pcs, stream);
 
     return stream;
   }
 
   // 关闭远程视频流
   async endRemoteVideoStream(pcs: RTCPeerConnection[]) {
-    pcs.forEach((pc) => {
-      pc.getSenders().forEach((sender) => {
-        if (sender.track?.kind === 'video') {
-          pc.removeTrack(sender);
-        }
-      });
-    });
+    this.clearTracks(pcs, 'video');
 
     return this.endVideoStream();
   }
@@ -90,42 +79,26 @@ export default class {
 
   /************************ share相关处理，与video对应 ************************/
 
-  async toggleRemoteShareStream(pcs: RTCPeerConnection[], options?: MediaTrackConstraints) {
-    if (this.shareStream) {
-      if (this.isVideoOn) {
-        await this.startRemoteVideoStream(pcs, options);
-      }
-      return this.endRemoteShareStream(pcs);
-    } else {
-      this.isVideoOn = !!this.videoStream;
-      if (this.isVideoOn) {
-        await this.endRemoteVideoStream(pcs);
-      }
-      return this.startRemoteShareStream(pcs, options);
-    }
-  }
+  async startRemoteShareStream(pcs: RTCPeerConnection[], options?: MediaTrackConstraints, onEnd?: Function) {
+    this.clearTracks(pcs, 'video');
 
-  async startRemoteShareStream(pcs: RTCPeerConnection[], options?: MediaTrackConstraints) {
     const stream = await this.startShareStream(options);
-    stream.getTracks().forEach((track) => {
-      pcs.forEach((pc) => {
-        pc.addTrack(track);
-      });
-    });
+    this.updateTracks(pcs, stream);
+
+    if (onEnd) {
+      stream.getTracks()[0].addEventListener('ended', () => onEnd());
+    }
 
     return stream;
   }
 
-  async endRemoteShareStream(pcs: RTCPeerConnection[]) {
-    pcs.forEach((pc) => {
-      pc.getSenders().forEach((sender) => {
-        if (sender.track?.kind === 'video') {
-          pc.removeTrack(sender);
-        }
-      });
-    });
+  endRemoteShareStream(pcs: RTCPeerConnection[]) {
+    this.clearTracks(pcs, 'video');
+    this.endShareStream();
 
-    return this.endShareStream();
+    if (this.videoStream) {
+      this.updateTracks(pcs, this.videoStream);
+    }
   }
 
   async startShareStream(options?: MediaTrackConstraints) {
@@ -135,13 +108,11 @@ export default class {
     return this.shareStream;
   }
 
-  async endShareStream() {
+  endShareStream() {
     if (this.shareStream) {
       this.shareStream.getTracks().forEach((track) => track.stop());
       this.shareStream = null;
     }
-
-    return null;
   }
 
   /************************ audio相关处理，与video对应 ************************/
@@ -156,23 +127,12 @@ export default class {
 
   async startRemoteAudioStream(pcs: RTCPeerConnection[]) {
     const stream = await this.startAudioStream();
-    stream.getTracks().forEach((track) => {
-      pcs.forEach((pc) => {
-        pc.addTrack(track);
-      });
-    });
-
+    this.updateTracks(pcs, stream);
     return stream;
   }
 
   async endRemoteAudioStream(pcs: RTCPeerConnection[]) {
-    pcs.forEach((pc) => {
-      pc.getSenders().forEach((sender) => {
-        if (sender.track?.kind === 'audio') {
-          pc.removeTrack(sender);
-        }
-      });
-    });
+    this.clearTracks(pcs, 'audio');
 
     return this.endAudioStream();
   }
@@ -203,6 +163,18 @@ export default class {
 
   /************************ 其他 ************************/
 
+  initTracks(pc: RTCPeerConnection) {
+    if (this.shareStream) {
+      this.updateTracks([pc], this.shareStream);
+    } else if (this.videoStream) {
+      this.updateTracks([pc], this.videoStream);
+    }
+
+    if (this.audioStream) {
+      this.updateTracks([pc], this.audioStream);
+    }
+  }
+
   addTrack(track: MediaStreamTrack) {
     if (track.kind === 'video') {
       if (!this.videoStream) {
@@ -216,19 +188,23 @@ export default class {
       this.audioStream.addTrack(track);
     }
   }
-
-  addRemoteTrack(pc: RTCPeerConnection) {
-    if (this.videoStream) {
-      this.videoStream.getTracks().forEach((track) => {
+  
+  updateTracks(pcs: RTCPeerConnection[], stream: MediaStream) {
+    stream.getTracks().forEach((track) => {
+      pcs.forEach((pc) => {
         pc.addTrack(track);
       });
-    }
+    });
+  }
 
-    if (this.audioStream) {
-      this.audioStream.getTracks().forEach((track) => {
-        pc.addTrack(track);
+  clearTracks(pcs: RTCPeerConnection[], type?: string) {
+    pcs.forEach((pc) => {
+      pc.getSenders().forEach((sender) => {
+        if (!type || sender.track?.kind === type) {
+          pc.removeTrack(sender);
+        }
       });
-    }
+    });
   }
 
   destroy() {

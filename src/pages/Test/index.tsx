@@ -15,7 +15,7 @@ export default () => {
         {
           ...room.me!,
           isMe: true,
-          videoStream: room.localStream.shareStream || room.localStream.videoStream,
+          videoStream: room.localStream.videoStream,
           audioStream: room.localStream.audioStream,
         },
         ...pcs.map(d => ({
