@@ -12,7 +12,6 @@ export interface PeerBasicInfo {
 
 export interface PeerInfo extends PeerBasicInfo {
   id: string;
-  clientId: string;
 }
 
 export interface PeerInitParams {

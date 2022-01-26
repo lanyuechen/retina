@@ -42,13 +42,13 @@ export default () => {
         {
           ...room.me!,
           isMe: true,
-          videoStream: room.localStream.videoStream,
-          audioStream: room.localStream.audioStream,
+          videoStream: room.stream.videoStream,
+          audioStream: room.stream.audioStream,
         },
         ...pcs.map(d => ({
           ...d.peerInfo,
-          videoStream: d.remoteStream.videoStream,
-          audioStream: d.remoteStream.audioStream,
+          videoStream: d.stream.videoStream,
+          audioStream: d.stream.audioStream,
           pc: d,
         })),
       ]);

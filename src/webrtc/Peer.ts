@@ -10,7 +10,7 @@ export default class Peer {
   peerInfo: PeerInfo;
   peerConnection: RTCPeerConnection;
   dataChannel: RTCDataChannel;
-  remoteStream: StreamManager;
+  stream: StreamManager;
   onChange: () => void;
   onDataChannelMessage: (message: any) => void;
 
@@ -33,7 +33,7 @@ export default class Peer {
 
     Socket.on('message', this.handleMessage.bind(this));
 
-    this.remoteStream = new StreamManager();
+    this.stream = new StreamManager();
 
     localStream.initTracks(this.peerConnection);
   }
@@ -41,9 +41,8 @@ export default class Peer {
   // 当调用PeerConnection.setLocalDescription()后触发，并发消息给其他用户
   handleIceCandidate(event: RTCPeerConnectionIceEvent) {
     if (event.candidate) {
-      Socket.broadcast({
+      Socket.sendTo(this.peerInfo.id, {
         type: 'candidate',
-        id: this.peerInfo.id,
         candidate: {
           type: 'candidate',
           sdpMLineIndex: event.candidate.sdpMLineIndex,
@@ -63,12 +62,12 @@ export default class Peer {
     trace('remote track', event);
 
     if (event.track.kind === 'video') {
-      this.remoteStream.endVideoStream();
+      this.stream.endVideoStream();
     } else if (event.track.kind === 'audio') {
-      this.remoteStream.endAudioStream();
+      this.stream.endAudioStream();
     }
 
-    this.remoteStream.addTrack(event.track);
+    this.stream.addTrack(event.track);
     
     this.onChange();
   }
@@ -84,9 +83,6 @@ export default class Peer {
   }
 
   handleMessage(message: Message) {
-    if (this.peerInfo.id !== message.id) {
-      return;
-    }
     trace('收到消息', message);
 
     if (message.type === 'offer') {
@@ -112,9 +108,8 @@ export default class Peer {
     trace('发送offser');
     const description = await this.peerConnection.createOffer();
     await this.peerConnection.setLocalDescription(description);
-    Socket.broadcast({
+    Socket.sendTo(this.peerInfo.id, {
       type: description.type,
-      id: this.peerInfo.id,
       description,
     });
   }
@@ -123,9 +118,8 @@ export default class Peer {
     trace('发送answer');
     const description = await this.peerConnection.createAnswer();
     await this.peerConnection.setLocalDescription(description);
-    Socket.broadcast({
+    Socket.sendTo(this.peerInfo.id, {
       type: description.type,
-      id: this.peerInfo.id,
       description,
     });
   }

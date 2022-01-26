@@ -5,7 +5,7 @@ const WS = '__WS__';
 class Socket {
   private ws?: WebSocket | null;
   private handler: {[key: string]: Function[]} = {};
-  clientId?: string; 
+  clientId?: string;
   roomId?: string;
   peerInfo: any;
   onJoinedRoom?: Function;
@@ -42,8 +42,8 @@ class Socket {
     this.send({ toH: this.roomId, type: 'message', message });
   }
 
-  sendTo(clientId: string, message: any) {
-    this.send({ toS: clientId, type: 'message', message });
+  sendTo(id: string, message: any) {
+    this.send({ toS: id, type: 'message', message });
   }
 
   on(key: 'message', cb: Function) {
@@ -101,7 +101,7 @@ class Socket {
         type: 'peer-join-room',
         peer: {
           ...this.peerInfo,
-          clientId: this.clientId,
+          id: this.clientId,
         },
         roomId: this.roomId,
       });
@@ -113,14 +113,14 @@ class Socket {
         .filter((user: any, i: number) => i > 0 &&  user.hub === this.roomId && this.peerInfo.nickname !== user.username)
         .map((user: any) => ({
           nickname: user.username,
-          clientId: user.session,
+          id: user.session,
         }));
 
       trace('receive', 'get users success', peers);
       this.onJoinedRoom?.({
         peer: {
           ...this.peerInfo,
-          clientId: this.clientId,
+          id: this.clientId,
         },
         peers,
         roomId: this.roomId,
@@ -133,7 +133,7 @@ class Socket {
             type: 'peer-leave-room',
             peer: {
               nickname: data.user,
-              clientId: data.sID,
+              id: data.sID,
             }
           });
         }

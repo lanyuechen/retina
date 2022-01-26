@@ -2,7 +2,6 @@ import Peer from './Peer';
 import StreamManager from '@/webrtc/StreamManager';
 import Recorder from '@/webrtc/Recorder';
 import { trace } from "./utils/log";
-import { getPcId } from './utils/utils';
 import Socket from './Socket';
 
 import type { PeerBasicInfo, PeerInfo } from './typings';
@@ -13,7 +12,7 @@ export default class Room {
   roomId: string;
   peers: Peer[];
   me: PeerInfo | null = null;
-  localStream: StreamManager;
+  stream: StreamManager;
   recorder: Recorder | null = null;
 
   static getInstance(roomId: string) {
@@ -26,17 +25,17 @@ export default class Room {
   constructor(roomId: string) {
     this.roomId = roomId;
     this.peers = [];
-    this.localStream = new StreamManager();
+    this.stream = new StreamManager();
   }
 
   async toggleVideo() {
-    await this.localStream.toggleRemoteVideoStream(this.peers.map(peer => peer.peerConnection));
+    await this.stream.toggleRemoteVideoStream(this.peers.map(peer => peer.peerConnection));
     this.peers.forEach(peer => peer.createOffer());
     this.emit('change', this.peers);
   }
 
   async toggleAudio() {
-    await this.localStream.toggleRemoteAudioStream(this.peers.map(peer => peer.peerConnection));
+    await this.stream.toggleRemoteAudioStream(this.peers.map(peer => peer.peerConnection));
     this.peers.forEach(peer => peer.createOffer());
     this.emit('change', this.peers);
   }
@@ -46,18 +45,18 @@ export default class Room {
     if (this.recorder) {
       this.recorder.stop();
       this.recorder = null;
-    } else if (this.localStream.videoStream) {
-      this.recorder = new Recorder(this.localStream.videoStream);
+    } else if (this.stream.videoStream) {
+      this.recorder = new Recorder(this.stream.videoStream);
       this.recorder.start();
     }
   }
 
   async startShare() {
-    await this.localStream.startRemoteShareStream(
+    await this.stream.startRemoteShareStream(
       this.peers.map(peer => peer.peerConnection),
       undefined,
       () => {
-        this.localStream.endRemoteShareStream(this.peers.map(peer => peer.peerConnection));
+        this.stream.endRemoteShareStream(this.peers.map(peer => peer.peerConnection));
         this.peers.forEach(peer => peer.createOffer());
       }
     );
@@ -70,13 +69,13 @@ export default class Room {
 
   async join(peerInfo: PeerBasicInfo, constraints?: any) {
 
-    await this.localStream.init(constraints);
+    await this.stream.init(constraints);
 
     Socket.on('message', (message: any) => {
       if (message.type === 'peer-join-room') {
         this.handlePeerJoinRoom(message);
       } else if (message.type === 'peer-leave-room') {
-        this.handlePeerLeaveRoom(message.peer.clientId);
+        this.handlePeerLeaveRoom(message.peer.id);
       }
     });
 
@@ -89,11 +88,8 @@ export default class Room {
     this.me = peer;
 
     this.peers = peers.map(d => new Peer({
-      localStream: this.localStream,
-      peerInfo: {
-        ...d,
-        id: getPcId(d.clientId, peer.clientId),
-      },
+      localStream: this.stream,
+      peerInfo: d,
       onChange: () => this.emit('change', this.peers),
       onDataChannelMessage: (message: any) => this.emit('data-channel-message', message),
     }));
@@ -104,11 +100,8 @@ export default class Room {
   handlePeerJoinRoom({ peer, roomId }: {peer: PeerInfo; roomId: string}) {
     trace(`${peer.nickname} 加入房间“${roomId}”`);
     const newPeer = new Peer({
-      localStream: this.localStream,
-      peerInfo: {
-        ...peer,
-        id: getPcId(this.me!.clientId, peer.clientId),
-      },
+      localStream: this.stream,
+      peerInfo: peer,
       onChange: () => this.emit('change', this.peers),
       onDataChannelMessage: (message: any) => this.emit('data-channel-message', message),
     });
@@ -118,10 +111,10 @@ export default class Room {
     this.emit('change', this.peers);
   }
 
-  handlePeerLeaveRoom(clientId: string) {
-    const peer = this.peers.find(d => d.peerInfo.clientId === clientId);
+  handlePeerLeaveRoom(id: string) {
+    const peer = this.peers.find(d => d.peerInfo.id === id);
     peer?.destroy();
-    this.peers = this.peers.filter(d => d.peerInfo.clientId !== clientId);
+    this.peers = this.peers.filter(d => d.peerInfo.id !== id);
     this.emit('change', this.peers);
   }
 
@@ -150,7 +143,7 @@ export default class Room {
   }
 
   destroy() {
-    this.localStream.destroy();
+    this.stream.destroy();
     this.hangup();
     window[ROOM] = null;
   }

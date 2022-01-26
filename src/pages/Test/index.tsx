@@ -32,7 +32,7 @@ export default () => {
     <div style={{width: 200}}>
       hello world
       {peers.map(d => (
-        <p key={d.clientId}>{d.nickname}</p>
+        <p key={d.id}>{d.nickname}</p>
       ))}
       <Chat room={room} />
     </div>
