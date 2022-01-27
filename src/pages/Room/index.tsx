@@ -7,12 +7,13 @@ import Room from '@/webrtc/Room';
 
 import Chat from '@/components/Chat';
 import Icon from '@/components/Icon';
+import Toolbar from '@/components/Toolbar';
 import useQuery from '@/utils/use-query';
 
 import Header from './Header';
 import Content from './Content';
-import Toolbar from './Toolbar';
 import PeerList from './PeerList';
+import Layout from './Layout';
 
 import style from './style.module.less';
 
@@ -80,45 +81,29 @@ export default () => {
   }
 
   return (
-    <div className={style.room}>
-      <div className={style.left} style={{paddingRight: drawerVisible ? 320 : 0}}>
+    <Layout
+      drawer={<PeerList peers={peers} />}
+      open={drawerVisible}
+      onClose={() => setDrawerVisible(false)}
+      toolbar={(
+        <Toolbar
+          peers={peers}
+          devices={devices}
+          onAction={handleAction}
+        />
+      )}
+    >
+      <div className={style.container}>
         <div className={style.header}>
           <Header layout={layout} onLayoutChange={handleLayoutChange} />
         </div>
+        
         <div className={style.content}>
           <Content layout={layout} peers={peers} />
         </div>
-        <div className={style.footer}>
-          <Toolbar
-            peers={peers}
-            devices={devices}
-            onAction={handleAction}
-          />
-        </div>
       </div>
-      <Drawer
-        variant="persistent"
-        open={drawerVisible}
-        anchor="right"
-        ModalProps={{
-          keepMounted: true,
-        }}
-        hideBackdrop
-        elevation={1}
-        onClose={() => setDrawerVisible(false)}
-      >
-        <Stack direction="row" alignItems="center">
-          <IconButton onClick={() => setDrawerVisible(false)}>
-            <Icon type="left" />
-          </IconButton>
-          <Typography variant="h6">
-            参会人
-          </Typography>
-        </Stack>
-        <Divider />
-        <PeerList peers={peers} />
-      </Drawer>
+      
       <Chat room={room} />
-    </div>
+    </Layout>
   );
 }

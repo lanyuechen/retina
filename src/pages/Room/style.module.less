@@ -1,52 +1,21 @@
-.room {
-  height: 100vh;
-  .left {
-    height: 100vh;
-    width: 100vw;
-    padding-right: 320px;
+.container {
+  height: calc(100vh - 64px);
+  width: 100%;
+  flex: auto;
+  display: flex;
+  flex-direction: column;
+  background: rgb(245, 246, 247);
+
+  .header {
+    height: 38px;
+    width: 100%;
+    background: #fff;
+  }
+  
+  .content {
     flex: auto;
-    display: flex;
-    flex-direction: column;
-    background: rgb(245, 246, 247);
-    .header {
-      height: 32px;
-    }
-    .content {
-      flex: auto;
-      padding: 8px;
-      position: relative;
-    }
-    .footer {
-      height: 50px;
-      background: #fff;
-      box-shadow: 0 -1px 5px rgba(0, 0, 0, 0.01);
-    }
-  }
-}
-.drawer {
-  [class~=ant-drawer-content-wrapper] {
-    box-shadow: -1px 0 5px rgba(0, 0, 0, 0.01)!important;
-  }
-  [class~=ant-drawer-header-title] {
-    flex-direction: row-reverse;
-  }
-  [class~=ant-drawer-close] {
-    font-size: 12px;
-    margin: 0;
-  }
-  [class~=ant-drawer-body] {
-    padding: 0;
+    padding: 8px;
+    position: relative;
   }
 }
 
-@media screen and (max-width: 960px) {
-  .room .left {
-    padding-right: 0!important;
-  }
-}
-
-@media screen and (max-width: 640px) {
-  .room .left {
-    padding-right: 0!important;
-  }
-}
