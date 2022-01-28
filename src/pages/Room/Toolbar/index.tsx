@@ -21,29 +21,29 @@ export default (props: PropType) => {
 
   const menu = (
     <MenuList>
-      <MenuItem>
+      <MenuItem onClick={() => onAction('share')}>
         <ListItemIcon>
-          <Icon type="cc" />
+          <Icon type="share-screen" />
         </ListItemIcon>
-        <ListItemText>打开字幕</ListItemText>
+        <ListItemText>共享桌面</ListItemText>
       </MenuItem>
-      <MenuItem>
+      <MenuItem onClick={() => onAction('recorder')}>
         <ListItemIcon>
-          <Icon type="live" />
+          <Icon type="recording" />
         </ListItemIcon>
-        <ListItemText>转播画面</ListItemText>
-      </MenuItem>
-      <MenuItem>
-        <ListItemIcon>
-          <Icon type="effect" />
-        </ListItemIcon>
-        <ListItemText>特效</ListItemText>
+        <ListItemText>录制视频</ListItemText>
       </MenuItem>
       <MenuItem>
         <ListItemIcon>
           <Icon type="setting" />
         </ListItemIcon>
         <ListItemText>设置</ListItemText>
+      </MenuItem>
+      <MenuItem onClick={() => onAction('leave')}>
+        <ListItemIcon color="error">
+          <Icon type="phone" />
+        </ListItemIcon>
+        <ListItemText>挂断</ListItemText>
       </MenuItem>
     </MenuList>
   );
@@ -99,23 +99,19 @@ export default (props: PropType) => {
         </Badge>
       </Button>
 
-      <Button sx={{ width: BUTTON_WIDTH, color: 'rgb(52, 199, 58)' }} onClick={() => onAction('share')}>
-        <IconWithText icon={<Icon type="share-screen" />} text="共享" />
-      </Button>
+      <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
+        <Button sx={{ width: BUTTON_WIDTH, color: 'rgb(52, 199, 58)' }} onClick={() => onAction('share')}>
+          <IconWithText icon={<Icon type="share-screen" />} text="共享" />
+        </Button>
 
-      <Button sx={{width: BUTTON_WIDTH}} onClick={() => onAction('recorder')}>
-        <IconWithText icon={<Icon type="recording" />} text="录屏" />
-      </Button>
+        <Button sx={{width: BUTTON_WIDTH}} onClick={() => onAction('recorder')}>
+          <IconWithText icon={<Icon type="recording" />} text="录屏" />
+        </Button>
+      </Box>
 
       <Box sx={{ flexGrow: 1 }} />
 
       <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
-        <Popover overlay={menu}>
-          <Button sx={{width: BUTTON_WIDTH}}>
-            <IconWithText icon={<Icon type="menu" />} text="更多" />
-          </Button>
-        </Popover>
-
         <Button sx={{width: BUTTON_WIDTH}} color="error" onClick={() => onAction('leave')}>
           <IconWithText icon={<Icon type="phone" />} text="挂断" />
         </Button>
