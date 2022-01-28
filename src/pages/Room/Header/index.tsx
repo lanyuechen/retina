@@ -1,6 +1,6 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
-import { Grid, Box, Divider, Button, Typography, Card, CardContent, CardActions, Stack } from '@mui/material';
+import { Box, Divider, Button, Typography, Card, CardContent, CardActions, Stack, Toolbar } from '@mui/material';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import Icon from '@/components/Icon';
 import Timer from '@/components/Timer';
@@ -18,20 +18,22 @@ export default (props: any) => {
   const { layout, onLayoutChange } = props;
   const { id } = useParams<{id: string}>();
 
-  var menuInfo = (
+  const menuInfo = (
     <Card sx={{ width: 320 }}>
       <CardContent>
-        <Typography gutterBottom variant="h6">
-          nickname
+        <Typography variant="subtitle2">
+          房间ID
         </Typography>
-        <Grid container rowSpacing={1}>
-          <Grid item xs={3}>房间ID</Grid>
-          <Grid item xs={9}>{id}</Grid>
-        
-          <Grid item xs={3}>房间链接</Grid>
-          <Grid item xs={9}>https://lanyuechen.github.io/retina/#/join</Grid>
-        
-        </Grid>
+        <Typography variant="body2" sx={{color: '#888'}} gutterBottom>
+          {id}
+        </Typography>
+
+        <Typography variant="subtitle2">
+          房间链接
+        </Typography>
+        <Typography variant="body2" sx={{color: '#888'}}>
+          https://lanyuechen.github.io/retina/#/join
+        </Typography>
       </CardContent>
       <CardActions>
         <CopyToClipboard
@@ -44,7 +46,7 @@ export default (props: any) => {
     </Card>
   );
 
-  var menu = (
+  const menu = (
     <Card>
       <CardContent>
         <Stack direction="row" spacing={2}>
@@ -57,7 +59,9 @@ export default (props: any) => {
               <div className={style.icon} data-type={d.name}>
                 <Icon type={d.icon} />
               </div> 
-              {d.title}
+              <Typography variant="caption">
+                {d.title}
+              </Typography>
             </div>
           ))}
         </Stack>
@@ -66,35 +70,29 @@ export default (props: any) => {
   );
 
   return (
-    <Grid container className={style.container}>
-      <Grid item xs={8}>
-        <Box
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            width: 'fit-content',
-            '& hr': {
-              mx: 0.5,
-            },
-          }}
-        >
-          <Popover overlay={menuInfo}>
-            <span className={style.dropdown}>
-              ID: {id} <Icon type="down" />
-            </span>
-          </Popover>
-          <Divider orientation="vertical" variant="middle" flexItem />
-          <Timer />
-        </Box>
-      </Grid>
-      <Grid item xs={4}>
+    <Toolbar variant="dense">
+      <Popover overlay={menuInfo}>
+        <Button size="small" sx={{ color: '#fff' }}>
+          ID: {id} <Icon type="down" />
+        </Button>
+      </Popover>
+
+      <Divider sx={{ mx: 1, my: 2, background: '#fff' }} variant="middle" orientation="vertical" flexItem />
+
+      <Typography variant="subtitle2" sx={{ color: '#fff' }}>
+        <Timer />
+      </Typography>
+
+      <Box sx={{ flexGrow: 1 }} />
+
+      <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
         <Popover overlay={menu}>
-          <span className={style.dropdown} style={{float: 'right'}}>
-            <Icon type="appstore" />&nbsp;
+          <Button sx={{ color: '#fff' }}>
+            <Icon type="layout-grid" />&nbsp;
             {menuData.find(d => d.name === layout)?.title} <Icon type="down" />
-          </span>
+          </Button>
         </Popover>
-      </Grid>
-    </Grid>
-  )
+      </Box>
+    </Toolbar>
+  );
 }

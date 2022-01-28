@@ -1,21 +1,18 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Drawer, Divider, IconButton, Typography, Stack } from '@mui/material';
 
 import Peer from '@/webrtc/Peer';
 import Room from '@/webrtc/Room';
 
 import Chat from '@/components/Chat';
-import Icon from '@/components/Icon';
-import Toolbar from '@/components/Toolbar';
 import useQuery from '@/utils/use-query';
 
 import Header from './Header';
+import Toolbar from './Toolbar';
 import Content from './Content';
 import PeerList from './PeerList';
 import Layout from './Layout';
 
-import style from './style.module.less';
 
 import type { PeerState } from './typings';
 
@@ -83,26 +80,13 @@ export default () => {
   return (
     <Layout
       drawer={<PeerList peers={peers} />}
-      open={drawerVisible}
+      drawerVisible={drawerVisible}
+      drawerWidth={320}
+      header={<Header layout={layout} onLayoutChange={handleLayoutChange} />}
+      toolbar={<Toolbar peers={peers} devices={devices} onAction={handleAction} />}
       onClose={() => setDrawerVisible(false)}
-      toolbar={(
-        <Toolbar
-          peers={peers}
-          devices={devices}
-          onAction={handleAction}
-        />
-      )}
     >
-      <div className={style.container}>
-        <div className={style.header}>
-          <Header layout={layout} onLayoutChange={handleLayoutChange} />
-        </div>
-        
-        <div className={style.content}>
-          <Content layout={layout} peers={peers} />
-        </div>
-      </div>
-      
+      <Content layout={layout} peers={peers} />
       <Chat room={room} />
     </Layout>
   );

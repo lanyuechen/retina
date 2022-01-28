@@ -1,98 +1,67 @@
-import React from 'react';
-import { Drawer, Divider, IconButton, Typography, Box } from '@mui/material';
-import { styled } from '@mui/material/styles';
-import CssBaseline from '@mui/material/CssBaseline';
-import MuiAppBar, { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar';
+import React, { useMemo } from 'react';
+import { Drawer, Divider, IconButton, Typography, AppBar, Toolbar } from '@mui/material';
+import { styled, useTheme } from '@mui/material/styles';
 
 import Icon from '@/components/Icon';
 
-const DRAWER_WIDTH = 320;
-
-const DrawerHeader = styled('div')(({ theme }) => ({
-  display: 'flex',
-  alignItems: 'center',
-  padding: theme.spacing(0, 1),
-  // necessary for content to be below app bar
-  ...theme.mixins.toolbar,
-  justifyContent: 'flex-start',
-}));
-
-const Main = styled('main', {
-  shouldForwardProp: (prop) => prop !== 'open'
-})<{
-  open?: boolean;
-}>(({ theme, open }) => ({
-  flexGrow: 1,
-  transition: theme.transitions.create('margin', {
-    easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.leavingScreen,
-  }),
-  marginRight: -DRAWER_WIDTH,
-  ...(open && {
-    transition: theme.transitions.create('margin', {
-      easing: theme.transitions.easing.easeOut,
-      duration: theme.transitions.duration.enteringScreen,
-    }),
-    marginRight: 0,
-  }),
-}));
-
-interface AppBarProps extends MuiAppBarProps {
-  open?: boolean;
-}
-
-const AppBar = styled(MuiAppBar, {
-  shouldForwardProp: (prop) => prop !== 'open',
-})<AppBarProps>(({ theme, open }) => ({
-  transition: theme.transitions.create(['margin', 'width'], {
-    easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.leavingScreen,
-  }),
-  ...(open && {
-    width: `calc(100% - ${DRAWER_WIDTH}px)`,
-    transition: theme.transitions.create(['margin', 'width'], {
-      easing: theme.transitions.easing.easeOut,
-      duration: theme.transitions.duration.enteringScreen,
-    }),
-    marginRight: DRAWER_WIDTH,
-  }),
-}));
+import style from './style.module.less';
 
 export default (props: any) => {
-  const { drawer, children, open, onClose } = props;
+  const { drawer, drawerVisible, drawerWidth = 320, header, children, onClose } = props;
+  const theme = useTheme();
+
+  const transition = useMemo(() => theme.transitions.create('margin', {
+    easing: theme.transitions.easing.easeOut,
+    duration: theme.transitions.duration.enteringScreen,
+  }), [theme]);
 
   return (
-    <Box sx={{ display: 'flex' }}>
-      <CssBaseline />
-      <AppBar position="fixed" open={open} color="default" sx={{ top: 'auto', bottom: 0 }}>
-        {props.toolbar}
-      </AppBar>
-      <Main open={open}>
-        {children}
-      </Main>
+    <div className={style.container}>
+      <div
+        className={style.main}
+        style={{
+          marginRight: drawerVisible ? 0 : -drawerWidth,
+          transition,
+        }}
+      >
+        <AppBar position="static">
+          {header}
+        </AppBar>
+
+        <div className={style.content}>
+          {children}
+        </div>
+
+        <AppBar position="static" color="default">
+          {props.toolbar}
+        </AppBar>
+      </div>
+
       <Drawer
         sx={{
-          width: DRAWER_WIDTH,
+          width: drawerWidth,
           flexShrink: 0,
           '& .MuiDrawer-paper': {
-            width: DRAWER_WIDTH,
+            width: drawerWidth,
           },
         }}
         variant="persistent"
         anchor="right"
-        open={open}
+        open={drawerVisible}
       >
-        <DrawerHeader>
-          <IconButton onClick={onClose}>
+        <Toolbar variant="dense">
+          <IconButton onClick={onClose} color="inherit" edge="start" sx={{ mr: 1 }}>
             <Icon type="right" />
           </IconButton>
           <Typography variant="h6">
             参会人
           </Typography>
-        </DrawerHeader>
+        </Toolbar>
+
         <Divider />
+        
         {drawer}
       </Drawer>
-    </Box>
+    </div>
   );
 }
