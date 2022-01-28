@@ -85,7 +85,7 @@ export default (props: any) => {
 
       <Box sx={{ flexGrow: 1 }} />
 
-      <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
+      <Box>
         <Popover overlay={menu}>
           <Button sx={{ color: '#fff' }}>
             <Icon type="layout-grid" />&nbsp;

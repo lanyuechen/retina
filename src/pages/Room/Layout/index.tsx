@@ -1,14 +1,16 @@
 import React, { useMemo } from 'react';
-import { Drawer, Divider, IconButton, Typography, AppBar, Toolbar } from '@mui/material';
-import { styled, useTheme } from '@mui/material/styles';
+import { Drawer, Divider, IconButton, Typography, AppBar, Toolbar, useMediaQuery } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 
 import Icon from '@/components/Icon';
 
 import style from './style.module.less';
 
 export default (props: any) => {
-  const { drawer, drawerVisible, drawerWidth = 320, header, children, onClose } = props;
+  const { drawer, drawerVisible, header, children, onClose } = props;
+  const drawerWidth = Math.min(window.innerWidth, props.drawerWidth || 320);
   const theme = useTheme();
+  const matches = useMediaQuery('(max-width:600px)');
 
   const transition = useMemo(() => theme.transitions.create('margin', {
     easing: theme.transitions.easing.easeOut,
@@ -20,7 +22,7 @@ export default (props: any) => {
       <div
         className={style.main}
         style={{
-          marginRight: drawerVisible ? 0 : -drawerWidth,
+          marginRight: matches || drawerVisible ? 0 : -drawerWidth,
           transition,
         }}
       >
@@ -45,7 +47,7 @@ export default (props: any) => {
             width: drawerWidth,
           },
         }}
-        variant="persistent"
+        variant={matches ? 'temporary' : 'persistent'}
         anchor="right"
         open={drawerVisible}
       >

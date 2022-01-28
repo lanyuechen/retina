@@ -79,11 +79,11 @@ export default () => {
 
   return (
     <Layout
+      header={<Header layout={layout} onLayoutChange={handleLayoutChange} />}
+      toolbar={<Toolbar peers={peers} devices={devices} onAction={handleAction} />}
       drawer={<PeerList peers={peers} />}
       drawerVisible={drawerVisible}
       drawerWidth={320}
-      header={<Header layout={layout} onLayoutChange={handleLayoutChange} />}
-      toolbar={<Toolbar peers={peers} devices={devices} onAction={handleAction} />}
       onClose={() => setDrawerVisible(false)}
     >
       <Content layout={layout} peers={peers} />
