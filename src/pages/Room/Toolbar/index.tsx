@@ -99,7 +99,7 @@ export default (props: PropType) => {
         </Badge>
       </Button>
 
-      <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
+      <Box sx={{ display: { xs: 'none', sm: 'flex' } }}>
         <Button sx={{ width: BUTTON_WIDTH, color: 'rgb(52, 199, 58)' }} onClick={() => onAction('share')}>
           <IconWithText icon={<Icon type="share-screen" />} text="共享" />
         </Button>
@@ -111,12 +111,12 @@ export default (props: PropType) => {
 
       <Box sx={{ flexGrow: 1 }} />
 
-      <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
+      <Box sx={{ display: { xs: 'none', sm: 'flex' } }}>
         <Button sx={{width: BUTTON_WIDTH}} color="error" onClick={() => onAction('leave')}>
           <IconWithText icon={<Icon type="phone" />} text="挂断" />
         </Button>
       </Box>
-      <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
+      <Box sx={{ display: { xs: 'flex', sm: 'none' } }}>
         <Popover overlay={menu}>
           <Button sx={{width: BUTTON_WIDTH}}>
             <IconWithText icon={<Icon type="menu" />} text="更多" />
