@@ -25,7 +25,7 @@ export default (props: {peer: any}) => {
       <ListItemButton>
         <ListItemAvatar>
           <Avatar>
-            {peer.nickname[0]}
+            {peer.nickname?.[0]}
           </Avatar>
         </ListItemAvatar>
         <ListItemText
