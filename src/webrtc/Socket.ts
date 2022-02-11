@@ -1,6 +1,8 @@
 import { trace } from '@/webrtc/utils/log';
 
 const WS = '__WS__';
+// const WS_URL = 'wss://ws.achex.ca';
+const WS_URL = 'wss://cloud.achex.ca';
 
 class Socket {
   private ws?: WebSocket | null;
@@ -27,21 +29,19 @@ class Socket {
     this.peerInfo = peerInfo;
 
     await this.connect();
-    this.send({ auth: 'username', passwd: 'none' });
+    this.login(peerInfo.nickname);
+    this.send({ joinHub: roomId });
   }
 
   leaveRoom() {
-    this.send({ to: this.roomId, type: 'left-room', user: this.peerInfo.nickname });
-  }
-
-  destroy() {
     this.ws?.close();
     this.ws = null;
     this.handler = {};
+    this.send({ leaveHub: this.roomId });
   }
 
   broadcast(message: any) {
-    this.send({ to: this.roomId, type: 'message', message });
+    this.send({ toH: this.roomId, type: 'message', message });
   }
 
   sendTo(id: string, message: any) {
@@ -55,7 +55,7 @@ class Socket {
 
   private connect() {
     return new Promise<void>((resolve, reject) => {
-      this.ws = new WebSocket('ws://achex.ca:4010');
+      this.ws = new WebSocket(WS_URL);
     
       this.ws.onclose = this.handleClose.bind(this);
       this.ws.onmessage = this.handleMessage.bind(this);
@@ -72,8 +72,12 @@ class Socket {
     });
   }
 
+  private login(username: string) {
+    this.send({ auth: username, passwd: '123456' });
+  }
+
   private getUsers() {
-    this.send({ showusers: 'all' });
+    this.send({ 'serverstat': true });
   }
 
   private send(message: any) {
@@ -88,10 +92,13 @@ class Socket {
   private handleMessage(e: MessageEvent) {
     const data = JSON.parse(e.data);
 
-    if (data.SID) {                   // 成功登陆，cmd: { auth: username, passwd: 'none' }
-      this.clientId = data.SID + '';
-      this.send({ setID: this.roomId, passwd: 'none' });
-    } else if (data.auth === 'ok') {  // 成功加入房间，cmd: { setID: roomId, passwd: 'none'}
+    if (data.auth === 'OK') {
+      // 登录成功
+      trace('receive', 'login success');
+      this.clientId = data.SID;
+    } else if (data.joinHub === 'OK') {
+      // 加入房间成功
+      trace('receive', 'join room success');
       this.broadcast({
         type: 'peer-join-room',
         peer: {
@@ -102,11 +109,13 @@ class Socket {
       });
 
       this.getUsers();
-    } else if (data.users) {          // 获取用户列表成功，cmd: { showusers: 'all' }
-      const peers = Object.entries(data)
-        .filter(([k, v]: any) => k !== 'users' && k !== this.clientId && v.UserID === this.roomId)
-        .map(([k]: any) => ({
-          id: k,
+    } else if (data.users) {
+      // 获取用户列表成功
+      const peers = data.users
+        .filter((user: any, i: number) => i > 0 &&  user.hub === this.roomId && this.peerInfo.nickname !== user.username)
+        .map((user: any) => ({
+          nickname: user.username,
+          id: user.session,
         }));
 
       trace('receive', 'get users success', peers);
@@ -118,30 +127,24 @@ class Socket {
         peers,
         roomId: this.roomId,
       });
-    } else if (data.type === 'left-room') {
-      if (data.sID !== this.clientId) {
-        trace('receive', `${data.user}(${data.sID}) left room`);
-        if (this.handler.message) {
-          for (let fn of this.handler.message) {
-            fn({
-              type: 'peer-leave-room',
-              peer: {
-                nickname: data.user,
-                id: data.sID,
-              }
-            });
-          }
+    } else if (data.leftHub) {
+      trace('receive', `${data.user}(${data.sID}) left room`);
+      if (this.handler.message) {
+        for (let fn of this.handler.message) {
+          fn({
+            type: 'peer-leave-room',
+            peer: {
+              nickname: data.user,
+              id: data.sID,
+            }
+          });
         }
-      } else {
-        this.destroy();
       }
     } else if (data.type === 'message') {
-      if (data.sID !== this.clientId) {
-        trace('receive', 'message');
-        if (this.handler.message) {
-          for (let fn of this.handler.message) {
-            fn(data.message);
-          }
+      trace('receive', 'message');
+      if (this.handler.message) {
+        for (let fn of this.handler.message) {
+          fn(data.message);
         }
       }
     } else {
