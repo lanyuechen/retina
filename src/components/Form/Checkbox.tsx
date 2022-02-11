@@ -10,7 +10,7 @@ export interface ICheckbox extends React.FC<Props> {
 }
 
 export default forwardRef((props: any, ref: any) => {
-  const { name, label, value, onChange } = props;
+  const { name, label, value, onChange, ...others } = props;
 
   return (
     <FormControlLabel

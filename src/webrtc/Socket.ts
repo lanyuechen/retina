@@ -1,7 +1,6 @@
 import { trace } from '@/webrtc/utils/log';
 
 const WS = '__WS__';
-// const WS_URL = 'wss://ws.achex.ca';
 const WS_URL = 'wss://cloud.achex.ca';
 
 class Socket {
@@ -37,7 +36,7 @@ class Socket {
     this.ws?.close();
     this.ws = null;
     this.handler = {};
-    this.send({ leaveHub: this.roomId });
+    // this.send({ leaveHub: this.roomId });
   }
 
   broadcast(message: any) {

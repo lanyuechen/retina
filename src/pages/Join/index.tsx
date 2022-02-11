@@ -1,15 +1,18 @@
 import React, { useRef } from 'react';
 import { useNavigate, createSearchParams } from 'react-router-dom';
 
-import { Box, Button } from '@mui/material';
+import { Box, Button, useMediaQuery } from '@mui/material';
 
 import Form, { FormRef } from '@/components/Form';
+import MultiAvatar from '@/components/MultiAvatar';
+import FormInput from './FormInput';
 
 import style from './style.module.less';
 
 export default () => {
   const form = useRef<FormRef>();
   const navigate = useNavigate();
+  const matches = useMediaQuery('(max-width:500px)');
 
   const joinMeeting = async () => {
     form.current?.submit((values: any) => {
@@ -26,13 +29,15 @@ export default () => {
 
   return (
     <div className={style.container}>
-      <Box sx={{ width: 300 }}>
-        <h2>加入房间</h2>
+      <div className={style.loginBox} style={matches ? { border: 'none' } : {}}>
+        <Box sx={{display: 'flex', justifyContent: 'center', mb: '36px'}}>
+          <MultiAvatar />
+        </Box>
         <Form
           ref={form}
           defaultValues={{
-            roomId: 'test',
-            username: 'test',
+            roomId: '',
+            username: '',
             video: true,
             audio: false,
           }}
@@ -41,16 +46,24 @@ export default () => {
             username: {required: '用户名不能为空'},
           }}
         >
-          <Form.Input name="roomId" label="房间ID" fullWidth />
-          <Form.Input name="username" label="用户名" fullWidth />
+          <FormInput name="roomId" placeholder="请输入房间ID" />
+          <FormInput name="username" placeholder="请输入用户名" />
 
           <Form.Checkbox name="video" label="视频" />
           <Form.Checkbox name="audio" label="音频" />
 
         </Form>
 
-        <Button variant="contained" fullWidth onClick={joinMeeting}>确定</Button>
-      </Box>
+        <Button
+          variant="outlined"
+          color="inherit"
+          disableElevation
+          fullWidth
+          onClick={joinMeeting}
+        >
+          确定
+        </Button>
+      </div>
     </div>
   );
 }
