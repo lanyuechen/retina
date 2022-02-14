@@ -1,4 +1,4 @@
-import { trace } from './utils/log';
+import log from './utils/log';
 import { noop } from './utils/utils';
 import Socket from './Socket';
 
@@ -55,11 +55,11 @@ export default class Peer {
   // iceconnection 状态监控
   handleConnectionChange(event: any) {
     const peerConnection = event.target;
-    trace(`ICE state: ${peerConnection.iceConnectionState}.`);
+    log.info('webRTC', 'ICE state', peerConnection.iceConnectionState);
   }
 
   handleRemoteTrack(event: RTCTrackEvent) {
-    trace('remote track', event);
+    log.info('webRTC', 'RemoteTrack', event);
 
     if (event.track.kind === 'video') {
       this.stream.endVideoStream();
@@ -73,17 +73,17 @@ export default class Peer {
   }
 
   handleDataChannelChange() {
-    trace(`dataChannel state: ${this.dataChannel.readyState}`);
+    log.info('webRTC', `DataChannel state changed: ${this.dataChannel.readyState}`);
   }
 
   handleDataChannelMessage(event: MessageEvent) {
     const message = JSON.parse(event.data);
-    trace('dataChannel', 'receive message', message);
+    log.info('webRTC', 'DataChannel received message', message);
     this.onDataChannelMessage(message);
   }
 
   handleMessage(message: Message) {
-    trace('收到消息', message);
+    log.info('Socket', 'onMessage', message);
 
     if (message.type === 'offer') {
       this.setRemoteDescription(new RTCSessionDescription(message.description));
@@ -96,7 +96,7 @@ export default class Peer {
   }
 
   sendMessage(message: any) {
-    trace('dataChannel', 'send message', message);
+    log.info('webRTC', 'dataChannel', 'send message', message);
     this.dataChannel.send(JSON.stringify(message));
   }
 
@@ -105,7 +105,7 @@ export default class Peer {
   }
 
   async createOffer() {
-    trace('发送offser');
+    log.info('webRTC', 'createOffer');
     const description = await this.peerConnection.createOffer();
     await this.peerConnection.setLocalDescription(description);
     Socket.sendTo(this.peerInfo.id, {
@@ -115,7 +115,7 @@ export default class Peer {
   }
 
   async createAnswer() {
-    trace('发送answer');
+    log.info('webRTC', 'createAnswer');
     const description = await this.peerConnection.createAnswer();
     await this.peerConnection.setLocalDescription(description);
     Socket.sendTo(this.peerInfo.id, {
@@ -125,7 +125,7 @@ export default class Peer {
   }
 
   setRemoteDescription(description: RTCSessionDescription) {
-    trace('setRemoteDescription', description);
+    log.info('webRTC', 'setRemoteDescription', description);
     this.peerConnection.setRemoteDescription(description);
   }
 

@@ -18,7 +18,6 @@ export default (props: any) => {
 
   useLayoutEffect(() => {
     if (divRef.current) {
-      console.log('message.change')
       divRef.current.scrollTop = divRef.current.scrollHeight;
     }
   }, [messages]);

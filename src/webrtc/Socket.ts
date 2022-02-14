@@ -1,4 +1,4 @@
-import { trace } from '@/webrtc/utils/log';
+import log from '@/webrtc/utils/log';
 
 const WS = '__WS__';
 const WS_URL = 'wss://cloud.achex.ca';
@@ -56,16 +56,23 @@ class Socket {
     return new Promise<void>((resolve, reject) => {
       this.ws = new WebSocket(WS_URL);
     
-      this.ws.onclose = this.handleClose.bind(this);
-      this.ws.onmessage = this.handleMessage.bind(this);
+      this.ws.onclose = (e: CloseEvent) => {
+        log.info('WebSocket', 'onclose', e);
+      }
+
+      this.ws.onmessage = (e: MessageEvent) => {
+        const data = JSON.parse(e.data);
+        log.info('WebSocket', 'Received message', data);
+        this.handleMessage(data);
+      }
       
       this.ws.onopen = (e: Event) => {
-        trace('webSocket', 'open', e);
+        log.info('WebSocket', 'Connected success', e);
         resolve();
       };
 
       this.ws.onerror = (e: Event) => {
-        trace('webSocket', 'error', e);
+        log.error('WebSocket', 'onerror', e);
         reject(e);
       };
     });
@@ -80,24 +87,18 @@ class Socket {
   }
 
   private send(message: any) {
-    trace('send', message);
+    log.info('WebSocket', 'Send message', message);
     this.ws?.send(JSON.stringify(message));
   }
 
-  private handleClose(e: CloseEvent) {
-    trace('webSocket', 'close', e);
-  }
-
-  private handleMessage(e: MessageEvent) {
-    const data = JSON.parse(e.data);
-
+  private handleMessage(data: any) {
     if (data.auth === 'OK') {
       // 登录成功
-      trace('receive', 'login success');
+      log.info('achex', 'Login success');
       this.clientId = data.SID;
     } else if (data.joinHub === 'OK') {
       // 加入房间成功
-      trace('receive', 'join room success');
+      log.info('achex', 'Join room success');
       this.broadcast({
         type: 'peer-join-room',
         peer: {
@@ -117,7 +118,8 @@ class Socket {
           id: user.session,
         }));
 
-      trace('receive', 'get users success', peers);
+      log.info('achex', 'Get peers(not include me) success', peers);
+
       this.onJoinedRoom?.({
         peer: {
           ...this.peerInfo,
@@ -127,7 +129,7 @@ class Socket {
         roomId: this.roomId,
       });
     } else if (data.leftHub) {
-      trace('receive', `${data.user}(${data.sID}) left room`);
+      log.info('achex', `${data.user}(${data.sID}) left room`);
       if (this.handler.message) {
         for (let fn of this.handler.message) {
           fn({
@@ -140,14 +142,12 @@ class Socket {
         }
       }
     } else if (data.type === 'message') {
-      trace('receive', 'message');
+      log.info('achex', 'Received message');
       if (this.handler.message) {
         for (let fn of this.handler.message) {
           fn(data.message);
         }
       }
-    } else {
-      trace('receive', 'other', data);
     }
   }
 }

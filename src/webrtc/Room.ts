@@ -1,7 +1,7 @@
 import Peer from './Peer';
 import StreamManager from '@/webrtc/StreamManager';
 import Recorder from '@/webrtc/Recorder';
-import { trace } from "./utils/log";
+import log from "./utils/log";
 import Socket from './Socket';
 
 import type { PeerBasicInfo, PeerInfo } from './typings';
@@ -41,7 +41,6 @@ export default class Room {
   }
 
   toggleRecord() {
-    console.log('[record]');
     if (this.recorder) {
       this.recorder.stop();
       this.recorder = null;
@@ -83,7 +82,7 @@ export default class Room {
   }
 
   async handleJoinedRoom({ peer, peers, roomId }: {peer: any; peers: any[]; roomId: string}) {
-    trace(`${peer.nickname}（本人）加入房间“${roomId}”`);
+    log.info('room', `${peer.nickname} (myself) joined room “${roomId}”`);
 
     this.me = peer;
 
@@ -98,7 +97,7 @@ export default class Room {
   }
 
   handlePeerJoinRoom({ peer, roomId }: {peer: PeerInfo; roomId: string}) {
-    trace(`${peer.nickname} 加入房间“${roomId}”`);
+    log.info('room', `${peer.nickname} joined room “${roomId}”`);
     const newPeer = new Peer({
       localStream: this.stream,
       peerInfo: peer,
@@ -119,7 +118,6 @@ export default class Room {
   }
 
   hangup() {
-    trace('挂断');
     Socket.leaveRoom();
   }
 
