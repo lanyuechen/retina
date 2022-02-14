@@ -9,6 +9,13 @@ import FormInput from './FormInput';
 
 import style from './style.module.less';
 
+const checkboxSx = {
+  color: '#fff',
+  '&.Mui-checked': {
+    color: '#fff',
+  },
+};
+
 export default () => {
   const form = useRef<FormRef>();
   const navigate = useNavigate();
@@ -49,9 +56,8 @@ export default () => {
           <FormInput name="roomId" placeholder="请输入房间ID" />
           <FormInput name="username" placeholder="请输入用户名" />
 
-          <Form.Checkbox name="video" label="视频" />
-          <Form.Checkbox name="audio" label="音频" />
-
+          <Form.Checkbox name="video" label="视频" sx={checkboxSx} />
+          <Form.Checkbox name="audio" label="音频" sx={checkboxSx} />
         </Form>
 
         <Button

@@ -7,8 +7,6 @@ export default () => {
   const html = useMemo(() => multiavatar(), []);
 
   return (
-    <>
-      <div className={style.multiavatar} dangerouslySetInnerHTML={{__html: html}} />
-    </>
+    <div className={style.multiavatar} dangerouslySetInnerHTML={{__html: html}} />
   );
 }
