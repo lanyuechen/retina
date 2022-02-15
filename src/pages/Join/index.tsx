@@ -1,7 +1,7 @@
 import React, { useRef } from 'react';
 import { useNavigate, createSearchParams } from 'react-router-dom';
 
-import { Box, Button, useMediaQuery } from '@mui/material';
+import { Box, Button } from '@mui/material';
 
 import Form, { FormRef } from '@/components/Form';
 import MultiAvatar from '@/components/MultiAvatar';
@@ -19,7 +19,6 @@ const checkboxSx = {
 export default () => {
   const form = useRef<FormRef>();
   const navigate = useNavigate();
-  const matches = useMediaQuery('(max-width:500px)');
 
   const joinMeeting = async () => {
     form.current?.submit((values: any) => {
@@ -36,7 +35,7 @@ export default () => {
 
   return (
     <div className={style.container}>
-      <div className={style.loginBox} style={matches ? { border: 'none' } : {}}>
+      <div className={style.loginBox}>
         <Box sx={{display: 'flex', justifyContent: 'center', mb: '36px'}}>
           <MultiAvatar />
         </Box>

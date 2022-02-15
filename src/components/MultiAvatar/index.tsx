@@ -1,12 +1,23 @@
-import { useMemo } from 'react';
-import multiavatar from './multiavatar';
+import { useState } from 'react';
 
-import style from './style.module.less';
+import Avatar from './Avatar';
+
+const rand = () => Math.floor(Math.random() * 48) + '';
+
+const genSeed = () => rand() + rand() + rand() + rand() + rand();
 
 export default () => {
-  const html = useMemo(() => multiavatar(), []);
+  const [seed, setSeed] = useState(genSeed());
+
+  const updateSeed = () => {
+    setSeed(genSeed()); 
+  }
 
   return (
-    <div className={style.multiavatar} dangerouslySetInnerHTML={{__html: html}} />
+    <Avatar
+      size={100}
+      seed={seed}
+      onClick={updateSeed}
+    />
   );
 }
