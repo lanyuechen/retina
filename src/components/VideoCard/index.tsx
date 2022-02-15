@@ -5,6 +5,7 @@ import Video from '@/components/Video';
 import Audio from '@/components/Audio';
 import Tool from '@/components/Tool';
 import { AudioIcon } from '@/components/SwitchButton';
+import MAvatar from '@/components/MultiAvatar/Avatar';
 
 import style from './style.module.less';
 
@@ -27,8 +28,8 @@ export default (props: PropType) => {
 
         {!peer.videoStream && (
           <div className={style.icon}>
-            <Avatar>
-              {peer.nickname?.[0]}
+            <Avatar sx={{ width: 80, height: 80 }}>
+              <MAvatar seed={peer.avatar} />
             </Avatar>
           </div>
         )}
@@ -37,8 +38,12 @@ export default (props: PropType) => {
           <Chip
             size="small"
             className={style.tag}
-            icon={<AudioIcon active={Boolean(peer.audioStream)} />}
             label={`${peer.nickname}${peer.isMe ? '(我)' : ''}`}
+            avatar={(
+              <Avatar sx={{bgcolor: 'transparent'}}>
+                <AudioIcon active={Boolean(peer.audioStream)} />
+              </Avatar>
+            )}
           />
         )}
 

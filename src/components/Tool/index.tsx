@@ -19,9 +19,9 @@ export default (props: PropType) => {
 
   return (
     <div className={`${style.tool} ${className ? className : ''}`}>
-      <Tooltip title="静音">
+      <Tooltip title={peer.audioStream ? '静音' : '打开声音'}>
         <IconButton size="small" onClick={() => onAction('toggle-audio')}>
-          <AudioIcon active={peer.audio} />
+          <AudioIcon active={peer.audioStream} />
         </IconButton>
       </Tooltip>
     

@@ -6,16 +6,19 @@ const rand = () => Math.floor(Math.random() * 48) + '';
 
 const genSeed = () => rand() + rand() + rand() + rand() + rand();
 
-export default () => {
+export default (props: any) => {
+  const { size, onChange } = props;
   const [seed, setSeed] = useState(genSeed());
 
   const updateSeed = () => {
-    setSeed(genSeed()); 
+    const newSeed = genSeed();
+    onChange?.(newSeed);
+    setSeed(newSeed); 
   }
 
   return (
     <Avatar
-      size={100}
+      size={size}
       seed={seed}
       onClick={updateSeed}
     />

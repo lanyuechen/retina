@@ -37,7 +37,7 @@ export default () => {
     <div className={style.container}>
       <div className={style.loginBox}>
         <Box sx={{display: 'flex', justifyContent: 'center', mb: '36px'}}>
-          <MultiAvatar />
+          <MultiAvatar size={100} onChange={(seed: string) => localStorage.avatar = seed} />
         </Box>
         <Form
           ref={form}

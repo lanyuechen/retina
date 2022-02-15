@@ -1,5 +1,6 @@
 import React from 'react';
 import { ListItem, ListItemButton, ListItemAvatar, ListItemText, Avatar, IconButton } from '@mui/material';
+import MAvatar from '@/components/MultiAvatar/Avatar';
 
 import { AudioIcon, VideoIcon } from '@/components/SwitchButton';
 
@@ -25,12 +26,12 @@ export default (props: {peer: any}) => {
       <ListItemButton>
         <ListItemAvatar>
           <Avatar>
-            {peer.nickname?.[0]}
+            <MAvatar seed={peer.avatar} />
           </Avatar>
         </ListItemAvatar>
         <ListItemText
           primary={`${peer.nickname}${peer.isMe ? '(我)' : ''}`}
-          secondary="主持人"
+          secondary={peer.id}
         />
       </ListItemButton>
     </ListItem>

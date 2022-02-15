@@ -8,6 +8,7 @@ export type {
 
 export interface PeerBasicInfo {
   nickname: string;
+  avatar?: string;
 }
 
 export interface PeerInfo extends PeerBasicInfo {

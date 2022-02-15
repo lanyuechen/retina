@@ -33,7 +33,16 @@ export default () => {
       setDevices(mediaDevices);
     });
 
-    room.join({nickname: username}, { video: video === 'on', audio: audio === 'on' });
+    room.join(
+      {
+        nickname: username,
+        avatar: localStorage.avatar,
+      },
+      {
+        video: video === 'on',
+        audio: audio === 'on'
+      }
+    );
 
     room.on('change', (pcs: Peer[]) => {
       setPeers([
@@ -87,7 +96,7 @@ export default () => {
       onClose={() => setDrawerVisible(false)}
     >
       <Content layout={layout} peers={peers} />
-      <Chat room={room} />
+      {/* <Chat room={room} /> */}
     </Layout>
   );
 }
