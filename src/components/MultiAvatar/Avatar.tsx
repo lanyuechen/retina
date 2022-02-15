@@ -8,7 +8,7 @@ export default (props: any) => {
 
   return (
     <div
-      style={{width: size, height: size, cursor: 'pointer'}}
+      style={{width: size, height: size, cursor: 'pointer', userSelect: 'none'}}
       dangerouslySetInnerHTML={{__html: html}}
       {...others}
     />
