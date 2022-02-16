@@ -1,6 +1,6 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
-import { Box, Divider, Button, Typography, Card, CardContent, CardActions, Stack, Toolbar } from '@mui/material';
+import { Box, Divider, Button, Typography, Card, CardContent, CardActions, Stack, Toolbar, useMediaQuery } from '@mui/material';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import Icon from '@/components/Icon';
 import Timer from '@/components/Timer';
@@ -18,6 +18,8 @@ const menuData = [
 export default (props: any) => {
   const { layout, onLayoutChange } = props;
   const { id } = useParams<{id: string}>();
+  const max340 = useMediaQuery('(max-width:340px)')
+  const max500 = useMediaQuery('(max-width:500px)')
 
   const menuInfo = (
     <Card sx={{ width: 320 }}>
@@ -48,9 +50,9 @@ export default (props: any) => {
   );
 
   const menu = (
-    <Card>
+    <Card sx={{width: max340 ? 172 : (max500 ? 312 : 'auto')}}>
       <CardContent>
-        <Stack direction="row" spacing={2}>
+        <Stack direction="row" sx={{flexWrap: 'wrap'}}>
           {menuData.map((d: any) => (
             <div
               key={d.name}
