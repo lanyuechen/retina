@@ -34,7 +34,9 @@ export default (props: any) => {
           horizontal: 'left',
         }}
       >
-        {overlay}
+        <div onClick={handleClose}>
+          {overlay}
+        </div>
       </Popover>
     </>
   );

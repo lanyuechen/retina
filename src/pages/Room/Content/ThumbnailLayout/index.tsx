@@ -39,8 +39,6 @@ export default (props: {peers: PeerInfo[]}) => {
     setActiveStep(step);
   };
 
-  console.log('====', peerPagination);
-
   return (
     <Stack sx={{height: '100%'}}>
       <ResizeObserverView onResize={handleResize}>
