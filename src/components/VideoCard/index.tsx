@@ -48,7 +48,7 @@ export default (props: PropType) => {
           />
         )}
 
-        {showTool && <Tool className={style.tool} peer={peer} />}
+        {showTool && <Tool peer={peer} style={{position: 'absolute', top: 0, right: 0}} />}
       </div>
     </AspectCard>
   );
