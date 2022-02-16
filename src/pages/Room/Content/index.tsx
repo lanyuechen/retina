@@ -1,18 +1,22 @@
 import React from 'react';
 import GalleryLayout from './GalleryLayout';
-import StackLayout from './StackLayout';
+import ThumbnailLayout from './ThumbnailLayout';
 import SpeakerLayout from './SpeakerLayout';
 
 export default (props: any) => {
-  const { layout, ...others } = props;
+  const { layout, peers, ...others } = props;
+
+  if (!peers || !peers.length) {
+    return null;
+  }
 
   if (layout === 'speaker') {
-    return <SpeakerLayout {...others} />;
+    return <SpeakerLayout peers={peers} {...others} />;
   }
 
-  if (layout === 'stack') {
-    return <StackLayout {...others} />;
+  if (layout === 'thumbnail') {
+    return <ThumbnailLayout peers={peers} {...others} />;
   }
 
-  return <GalleryLayout {...others} />;
+  return <GalleryLayout peers={peers} {...others} />;
 }

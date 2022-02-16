@@ -11,6 +11,7 @@ import style from './style.module.less';
 
 const menuData = [
   { name: 'gallery', title: '宫格视图', icon: 'layout-grid' },
+  { name: 'thumbnail', title: '缩略图视图', icon: 'layout-thumbnail' },
   { name: 'speaker', title: '演讲者视图', icon: 'layout-speaker' },
 ];
 
