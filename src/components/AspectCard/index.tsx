@@ -3,12 +3,12 @@ import React from 'react';
 import style from './style.module.less';
 
 export default (props: any) => {
-  const { children, width } = props;
+  const { children } = props;
 
   return (
     <div
       className={style.aspectCard}
-      style={{ width }}
+      style={props.style}
     >
       <div>
         {children}

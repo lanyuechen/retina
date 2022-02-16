@@ -15,7 +15,7 @@ export default (props: {peers: PeerInfo[]}) => {
   }, [peers.length]);
 
   return (
-    <Stack justifyContent="center" sx={{height: '100%'}}>
+    <Stack justifyContent="center" sx={{minHeight: '100%'}}>
       <Grid container alignItems="center" spacing={2}>
         {peers.map((d: any, i: number) => (
           <Grid item key={i} xs={12 / cols}>

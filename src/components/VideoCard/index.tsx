@@ -15,13 +15,14 @@ interface PropType {
   showTag?: boolean;
   showTool?: boolean;
   cover?: boolean;
+  style?: any;
 }
 
 export default (props: PropType) => {
   const { peer, showTag = true, showTool = true } = props;
 
   return (
-    <AspectCard>
+    <AspectCard style={props.style}>
       <div className={style.videoCard}>
         <Video className={style.video} src={peer.videoStream} />
         <Audio src={peer.audioStream} />
