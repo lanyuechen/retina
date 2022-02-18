@@ -19,7 +19,22 @@ export default class Peer {
     this.onChange = onChange || noop;
     this.onDataChannelMessage = onDataChannelMessage || noop;
 
-    const servers = undefined;
+    const servers = {
+      iceServers: [
+        {
+          urls: 'turn:numb.viagenie.ca',
+          credential: 'muazkh',
+          username: 'webrtc@live.com'
+        },
+        {
+          urls: [
+            'stun:stun.l.google.com:19302',
+            'stun:stun.voipbuster.com:3478',
+            'stun:stun.wirlab.net'
+          ]
+        }
+      ]
+    };
 
     this.peerConnection = new RTCPeerConnection(servers);
     this.peerConnection.addEventListener('icecandidate', this.handleIceCandidate.bind(this));
