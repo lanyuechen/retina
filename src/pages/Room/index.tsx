@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 
 import Peer from '@/webrtc/Peer';
 import Room from '@/webrtc/Room';
+import log from '@/webrtc/utils/log';
 
 import Chat from '@/components/Chat';
 import useQuery from '@/utils/use-query';
@@ -47,6 +48,7 @@ export default () => {
     );
 
     room.on('change', (pcs: Peer[]) => {
+      log.info('room', 'Peers changed', pcs);
       setLoading(false);
       setPeers([
         {

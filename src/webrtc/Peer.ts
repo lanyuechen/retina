@@ -116,11 +116,17 @@ export default class Peer {
   }
 
   addIceCandidate(candidate: RTCIceCandidate) {
-    this.peerConnection.addIceCandidate(candidate);
+    if (this.peerConnection.signalingState !== 'closed') {
+      log.info('webRTC', 'addIceCandidate', {signalingState: this.peerConnection.signalingState});
+      this.peerConnection.addIceCandidate(candidate);
+    }
   }
 
   async createOffer() {
-    log.info('webRTC', 'createOffer');
+    if (this.peerConnection.signalingState === 'closed') {
+      return;
+    }
+    log.info('webRTC', 'createOffer', {signalingState: this.peerConnection.signalingState});
     const description = await this.peerConnection.createOffer();
     await this.peerConnection.setLocalDescription(description);
     Socket.sendTo(this.peerInfo.id, {
@@ -130,7 +136,10 @@ export default class Peer {
   }
 
   async createAnswer() {
-    log.info('webRTC', 'createAnswer');
+    if (this.peerConnection.signalingState === 'closed') {
+      return;
+    }
+    log.info('webRTC', 'createAnswer', {signalingState: this.peerConnection.signalingState});
     const description = await this.peerConnection.createAnswer();
     await this.peerConnection.setLocalDescription(description);
     Socket.sendTo(this.peerInfo.id, {
@@ -140,8 +149,10 @@ export default class Peer {
   }
 
   setRemoteDescription(description: RTCSessionDescription) {
-    log.info('webRTC', 'setRemoteDescription', description);
-    this.peerConnection.setRemoteDescription(description);
+    if (this.peerConnection.signalingState !== 'closed') {
+      log.info('webRTC', 'setRemoteDescription', description, {signalingState: this.peerConnection.signalingState});
+      this.peerConnection.setRemoteDescription(description);
+    }
   }
 
   destroy() {
