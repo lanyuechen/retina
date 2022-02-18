@@ -3,11 +3,12 @@ import { Drawer, Divider, IconButton, Typography, AppBar, Toolbar, useMediaQuery
 import { useTheme } from '@mui/material/styles';
 
 import Icon from '@/components/Icon';
+import Loading from '@/components/LoadingFullSize';
 
 import style from './style.module.less';
 
 export default (props: any) => {
-  const { drawer, drawerVisible, header, children, onClose } = props;
+  const { drawer, drawerVisible, header, children, loading, onClose } = props;
   const drawerWidth = Math.min(window.innerWidth, props.drawerWidth || 320);
   const theme = useTheme();
   const matches = useMediaQuery('(max-width:600px)');
@@ -31,7 +32,7 @@ export default (props: any) => {
         </AppBar>
 
         <div className={style.content}>
-          {children}
+          {loading ? <Loading /> : children}
         </div>
 
         <AppBar position="static" color="default">

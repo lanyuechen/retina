@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Stack, Box, MobileStepper, IconButton } from '@mui/material';
 import SwipeableViews from 'react-swipeable-views';
 import VideoCard from '@/components/VideoCard';
@@ -15,17 +15,20 @@ export default (props: {peers: PeerInfo[]}) => {
 
   const activePeer = peers[0];
 
-  const [peerPagination, setPeerPagination] = useState<PeerInfo[][]>([]);
-  const [activeStep, setActiveStep] = React.useState(0);
+  const [activeStep, setActiveStep] = useState(0);
+  const [width, setWidth] = useState(0);
 
-  const handleResize = ({ width }: any) => {
+  const peerPagination = useMemo(() => {
+    if (!width) {
+      return [];
+    }
     const n = Math.floor(width / (THUMBNAIL_WIDTH + 16));
     const res = [];
     for (let i = 0; i < peers.length; i += n) {
       res.push(peers.slice(i, i + n));
     }
-    setPeerPagination(res);
-  }
+    return res;
+  }, [peers, width]);
 
   const handleNext = () => {
     setActiveStep((step: number) => step + 1);
@@ -41,7 +44,7 @@ export default (props: {peers: PeerInfo[]}) => {
 
   return (
     <Stack sx={{height: '100%'}}>
-      <ResizeObserverView onResize={handleResize}>
+      <ResizeObserverView onResize={(rect: any) => setWidth(rect.width)}>
         <SwipeableViews
           index={activeStep}
           onChangeIndex={handleStepChange}

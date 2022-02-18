@@ -21,6 +21,7 @@ export default () => {
   const { u: username, v: video, a: audio } = useQuery();
   const navigate = useNavigate();
 
+  const [loading, setLoading] = useState(false);
   const [peers, setPeers] = useState<PeerState[]>([]);
   const [devices, setDevices] = useState<MediaDeviceInfo[]>([]);
   const [layout, setLayout] = useState<string>('gallery');
@@ -29,6 +30,7 @@ export default () => {
   const room = useMemo(() => Room.getInstance(id!), []);
 
   useEffect(() => {
+    setLoading(true);
     room.getDevices().then((mediaDevices: MediaDeviceInfo[]) => {
       setDevices(mediaDevices);
     });
@@ -45,6 +47,7 @@ export default () => {
     );
 
     room.on('change', (pcs: Peer[]) => {
+      setLoading(false);
       setPeers([
         {
           ...room.me!,
@@ -93,6 +96,7 @@ export default () => {
       drawer={<PeerList peers={peers} />}
       drawerVisible={drawerVisible}
       drawerWidth={320}
+      loading={loading}
       onClose={() => setDrawerVisible(false)}
     >
       <Content layout={layout} peers={peers} />
