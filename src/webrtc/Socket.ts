@@ -87,7 +87,7 @@ class Socket {
   }
 
   private send(message: any) {
-    log.info('WebSocket', 'Send message', message);
+    log.info('achex', 'Send message', message);
     this.ws?.send(JSON.stringify(message));
   }
 
@@ -142,7 +142,7 @@ class Socket {
         }
       }
     } else if (data.type === 'message') {
-      log.info('achex', 'Received message');
+      log.info('achex', `Received message from ${data.FROM}(${data.sID}): ${data.message.type}`, data);
       if (this.handler.message) {
         for (let fn of this.handler.message) {
           fn(data.message);

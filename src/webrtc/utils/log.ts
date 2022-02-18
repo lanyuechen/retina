@@ -7,9 +7,9 @@ const COLORS: any = {
 };
 
 const SCOPE = [
-  'WebSocket',
-  'webRTC',
+  // 'WebSocket',
   'achex',
+  'webRTC',
   'room'
 ];
 

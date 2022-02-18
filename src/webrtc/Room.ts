@@ -82,7 +82,7 @@ export default class Room {
   }
 
   async handleJoinedRoom({ peer, peers, roomId }: {peer: any; peers: any[]; roomId: string}) {
-    log.info('room', `${peer.nickname} (myself) joined room “${roomId}”`);
+    log.info('room', `${peer.nickname}(myself) joined room “${roomId}”`);
 
     this.me = peer;
 
